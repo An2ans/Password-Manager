@@ -5,6 +5,7 @@ import "./index.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
 import SignUp from "./components/sign-up/SignUp";
+import LogIn from "./components/log-in/LogIn";
 
 // Material ui for front-end
 // ADD User funtionallity with restriction
@@ -22,7 +23,7 @@ class App extends Component {
         <Routes>
           <Route exact path="/" element={<SignUp />}></Route>
           <Route exact path="/sign-up" element={<SignUp />}></Route>
-          <Route exact path="/sign-in" element={<SignUp />}></Route>
+          <Route exact path="/log-in" element={<LogIn />}></Route>
         </Routes>
       </Router>
     );

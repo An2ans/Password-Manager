@@ -1,0 +1,39 @@
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  row-gap: 1.4rem;
+  flex-wrap: wrap;
+}
+
+.loginBox {
+  width: 50%;
+  text-align: center;
+  position: relative;
+  left: 50%;
+  transform: translate(-50%, 20%);
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.4);
+}
+
+.pwShowHideBtn {
+  position: relative;
+  align-self: flex-end;
+  width: fit-content;
+  top: -4rem;
+  /* transform: "translateY(150%)"; */
+}
+
+.signUpSubmit {
+  margin: 3rem 0 2rem 0;
+  width: fit-content;
+  align-self: center;
+  font-size: 2rem;
+}
+
+@media screen and (max-width: 550px) {
+  .loginBox {
+    width: 85%;
+  }
+}

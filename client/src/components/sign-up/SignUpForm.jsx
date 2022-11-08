@@ -56,7 +56,6 @@ const SignUpForm = ({
           </div>
 
           <Button
-            className="pwShowHideBtn"
             variant="text"
             onClick={pwMask}
             endIcon={
