@@ -1,8 +1,9 @@
 form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
   width: 100%;
+  row-gap: 1.4rem;
+  flex-wrap: wrap;
 }
 
 .loginBox {
@@ -16,19 +17,24 @@ form {
   box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.4);
 }
 
-.pwShowHideBtn {
-  /* position: "relative";
-  left: "50%";
-  transform: "translateX(-50%)"; */
-  position: relative;
-  top: -4rem;
-  right: -38%;
-  transform: "translateY(150%)";
-  gap: 0;
+.pwStrShow {
+  display: flex;
+  justify-content: space-between;
 }
 
+/* .pwShowHideBtn {
+  position: relative;
+  align-self: flex-end;
+  width: fit-content;
+  top: -4rem;
+  transform: "translateY(150%)";
+} */
+
 .signUpSubmit {
-  margin: 25px 0 15px 0;
+  margin: 3rem 0 2rem 0;
+  width: fit-content;
+  align-self: center;
+  font-size: 2rem;
 }
 
 .pwStrRow {

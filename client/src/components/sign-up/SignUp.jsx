@@ -1,12 +1,9 @@
 import React, { Component } from "react";
 import SignUpForm from "./SignUpForm.jsx";
+import { validateSignUpForm } from "../../utils/validators.js";
 import "./styles.css";
 
 const axios = require("axios");
-
-// const FormValidators = require("./validate");
-// const validateSignUpForm = FormValidators.validateSignUpForm;
-
 const zxcvbn = require("zxcvbn");
 
 class SignUp extends Component {
@@ -29,7 +26,7 @@ class SignUp extends Component {
     this.pwMask = this.pwMask.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.submitSignup = this.submitSignup.bind(this);
-    // this.validateForm = this.validateForm.bind(this);
+    this.validateForm = this.validateForm.bind(this);
     this.pwHandleChange = this.pwHandleChange.bind(this);
   }
 
@@ -70,44 +67,45 @@ class SignUp extends Component {
 
   submitSignup(user) {
     var params = { username: user.usr, password: user.pw, email: user.email };
-    axios
-      .post("https://ouramazingserver.com/api/signup/submit", params)
-      .then((res) => {
-        if (res.data.success === true) {
-          localStorage.token = res.data.token;
-          localStorage.isAuthenticated = true;
-          window.location.reload();
-        } else {
-          this.setState({
-            errors: { message: res.data.message },
-          });
-        }
-      })
-      .catch((err) => {
-        console.log("Sign up data submit error: ", err);
-      });
+    // axios
+    //   .post("https://ouramazingserver.com/api/signup/submit", params)
+    //   .then((res) => {
+    //     if (res.data.success === true) {
+    //       localStorage.token = res.data.token;
+    //       localStorage.isAuthenticated = true;
+    //       window.location.reload();
+    //     } else {
+    //       this.setState({
+    //         errors: { message: res.data.message },
+    //       });
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log("Sign up data submit error: ", err);
+    //   });
+    // TO CHANGE WITH SERVER DETAILS
   }
 
-  // validateForm(event) {
-  //   event.preventDefault();
-  //   var payload = validateSignUpForm(this.state.user);
-  //   if (payload.success) {
-  //     this.setState({
-  //       errors: {},
-  //     });
-  //     var user = {
-  //       usr: this.state.user.username,
-  //       pw: this.state.user.password,
-  //       email: this.state.user.email,
-  //     };
-  //     this.submitSignup(user);
-  //   } else {
-  //     const errors = payload.errors;
-  //     this.setState({
-  //       errors,
-  //     });
-  //   }
-  // }
+  validateForm(event) {
+    event.preventDefault();
+    var payload = validateSignUpForm(this.state.user);
+    if (payload.success) {
+      this.setState({
+        errors: {},
+      });
+      var user = {
+        usr: this.state.user.username,
+        pw: this.state.user.password,
+        email: this.state.user.email,
+      };
+      this.submitSignup(user);
+    } else {
+      const errors = payload.errors;
+      this.setState({
+        errors,
+      });
+    }
+  }
 
   pwMask(event) {
     event.preventDefault();

@@ -25,56 +25,69 @@ const SignUpForm = ({
 
       <form onSubmit={onSubmit}>
         <TextField
+          error={errors.username && true}
           name="username"
-          label="user name"
+          label="User name"
           value={user.username}
           onChange={onChange}
           helperText={errors.username}
         />
         <TextField
+          error={errors.email && true}
           name="email"
-          label="email"
+          label="Email"
           value={user.email}
           onChange={onChange}
           helperText={errors.email}
         />
         <TextField
+          error={errors.password && true}
           type={type}
           name="password"
-          label="password"
+          label="Password"
           value={user.password}
           onChange={onPwChange}
           helperText={errors.password}
         />
 
-        <Button
-          className="pwShowHideBtn"
-          variant="text"
-          onClick={pwMask}
-          endIcon={
-            btnTxt === "show" ? (
-              <VisibilityOutlinedIcon />
-            ) : (
-              <VisibilityOffOutlinedIcon />
-            )
-          }
-        >
-          {btnTxt}
-        </Button>
+        <div className="pwStrShow">
+          <div className="pwStrRow">
+            {score >= 1 && <PasswordStr score={score} />}
+          </div>
 
-        <div className="pwStrRow">
-          {score >= 1 && <PasswordStr score={score} />}
+          <Button
+            className="pwShowHideBtn"
+            variant="text"
+            onClick={pwMask}
+            endIcon={
+              btnTxt === "show" ? (
+                <VisibilityOutlinedIcon />
+              ) : (
+                <VisibilityOffOutlinedIcon />
+              )
+            }
+          >
+            {btnTxt}
+          </Button>
         </div>
+
         <TextField
+          error={errors.pwconfirm && true}
           type={type}
           name="pwconfirm"
-          label="confirm password"
+          label="Confirm password"
           value={user.pwconfirm}
           onChange={onChange}
           helperText={errors.pwconfirm}
         />
-        <br />
-        <Button className="signUpSubmit " type="submit" label="submit" />
+        <Button
+          className="signUpSubmit"
+          variant="contained"
+          type="submit"
+          label="submit"
+        >
+          Submit
+        </Button>
       </form>
       <p>
         Aleady have an account? <br />
