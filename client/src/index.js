@@ -11,6 +11,7 @@ import LogIn from "./components/log-in/LogIn";
 // ADD User funtionallity with restriction
 // delete credentials by id
 // usersdb
+// DELETE EMAIL FIELD FROM LOGIN
 
 class App extends Component {
   render() {

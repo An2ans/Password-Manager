@@ -1,16 +1,81 @@
 const express = require("express");
 const cors = require("cors");
+const session = require("express-session");
 const mysql = require("mysql2");
 const app = express();
 
 const { encrypt, decrypt } = require("./encryption");
 
-const db = mysql.createConnection({
-  user: "adminPM",
-  password: "password",
-  host: "localhost",
-  database: "passwordManager",
-});
+// const db = mysql.createConnection({
+//   user: "adminPM",
+//   password: "password",
+//   host: "localhost",
+//   database: "passwordManager",
+// });
+
+// exports.db = db;
+
+// const { createDB, createTables, resetTables, checkTables } = require("./db");
+
+const dbPromise = require("./db");
+
+const initialize = async () => {
+  const db = await dbPromise.connect();
+  const tables = await db.execute("SHOW TABLES;");
+
+  if (tables[0].length < 2) {
+    dbPromise.createTables();
+    console.log("Tables created");
+  }
+  tables[0].map((table) => {
+    if (
+      table.Tables_in_passwordManager.includes("users") ||
+      table.Tables_in_passwordManager.includes("credentials")
+    ) {
+      console.log("Tables ready to use");
+      return true;
+    } else {
+      dbPromise.resetTables();
+      console.log("Tables reset, users and credentials empty");
+    }
+  });
+};
+
+initialize();
+
+// db.connect((err) => {
+//   if (err) {
+//     console.log("error: ", err);
+//     createDB();
+//     createTables();
+//     db.connect((err) => {
+//       if (err) {
+//         console.log("Unable to connect ", err);
+//         throw err;
+//       }
+//       console.log("DB created and connected");
+//     });
+//   } else {
+//     console.log("Connected", );
+//     if (checkTables) {
+//       console.log("DB ready");
+//       console.log(checkTables());
+//     } else {
+//       console.log("tables reset");
+//       resetTables();
+//       console.log(checkTables());
+//     }
+//   }
+// });
+
+// We'll be using sessions to determine whether the user is logged-in or not.
+app.use(
+  session({
+    secret: "secret",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 
 app.use(cors());
 // parse requests of content-type - application/json
@@ -18,47 +83,42 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-const createTable = () => {
-  const credentialsTable = [
-    "id INT AUTO_INCREMENT NOT NULL",
-    "name VARCHAR(50) NOT NULL",
-    "url VARCHAR(250) NOT NULL",
-    "username VARCHAR(250) NOT NULL",
-    "password VARCHAR(250) NOT NULL",
-    "iv VARCHAR(250) NOT NULL",
-    "PRIMARY KEY(id));",
-  ];
-
-  const usersTable = [
-    "id INT AUTO_INCREMENT NOT NULL",
-    "user VARCHAR(50) NOT NULL",
-    "password VARCHAR(250) NOT NULL",
-    "credentials_id VARCHAR(500)",
-    "FOREIGN KEY (credentials_id) REFERENCES credentials(id)",
-    "PRIMARY KEY(id))",
-  ];
-
-  const qusers =
-    "CREATE TABLE IF NOT EXISTS users (" +
-    usersTable.map((field) => {
-      return field;
-    });
-
-  const q =
-    "CREATE TABLE IF NOT EXISTS credentials (" +
-    credentialsTable.map((field) => {
-      return field;
-    });
-
-  // db.query("DROP TABLE IF EXISTS credentials;");
-
-  db.query(qusers);
-};
-
 // Routes:
 
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to bezkoder application." });
+});
+
+app.post("/auth", (req, res) => {
+  // Capture the input fields
+  let username = req.body.username;
+  let password = req.body.password;
+  // Ensure the input fields exists and are not empty
+  if (username && password) {
+    // Execute SQL query that'll select the account from the database based on the specified username and password
+    db.query(
+      "SELECT * FROM users WHERE username = ? AND password = ?",
+      [username, password],
+      (error, results, fields) => {
+        // If there is an issue with the query, output the error
+        if (error) throw error;
+        // If the account exists
+        if (results.length > 0) {
+          // Authenticate the user
+          req.session.loggedin = true;
+          req.session.username = username;
+          // Redirect to home page
+          res.redirect("/");
+        } else {
+          res.send("Incorrect Username and/or Password!");
+        }
+        res.end();
+      }
+    );
+  } else {
+    res.send("Please enter Username and Password!");
+    res.end();
+  }
 });
 
 // ADD NEW CREDENTIALS
