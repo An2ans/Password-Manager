@@ -1,30 +1,25 @@
 const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
-const mysql = require("mysql2");
 const app = express();
 
 const { encrypt, decrypt } = require("./encryption");
 
-// const db = mysql.createConnection({
-//   user: "adminPM",
-//   password: "password",
-//   host: "localhost",
-//   database: "passwordManager",
-// });
+const dbPromise = require("./dbConnect");
 
-// exports.db = db;
-
-// const { createDB, createTables, resetTables, checkTables } = require("./db");
-
-const dbPromise = require("./db");
+const {
+  createDB,
+  createTables,
+  resetTables,
+  checkTables,
+} = require("./dbService");
 
 const initialize = async () => {
   const db = await dbPromise.connect();
   const tables = await db.execute("SHOW TABLES;");
 
   if (tables[0].length < 2) {
-    dbPromise.createTables();
+    createTables();
     console.log("Tables created");
   }
   tables[0].map((table) => {
@@ -35,38 +30,13 @@ const initialize = async () => {
       console.log("Tables ready to use");
       return true;
     } else {
-      dbPromise.resetTables();
+      resetTables();
       console.log("Tables reset, users and credentials empty");
     }
   });
 };
 
 initialize();
-
-// db.connect((err) => {
-//   if (err) {
-//     console.log("error: ", err);
-//     createDB();
-//     createTables();
-//     db.connect((err) => {
-//       if (err) {
-//         console.log("Unable to connect ", err);
-//         throw err;
-//       }
-//       console.log("DB created and connected");
-//     });
-//   } else {
-//     console.log("Connected", );
-//     if (checkTables) {
-//       console.log("DB ready");
-//       console.log(checkTables());
-//     } else {
-//       console.log("tables reset");
-//       resetTables();
-//       console.log(checkTables());
-//     }
-//   }
-// });
 
 // We'll be using sessions to determine whether the user is logged-in or not.
 app.use(
