@@ -16,24 +16,14 @@ const {
 
 const initialize = async () => {
   const db = await dbPromise.connect();
-  const tables = await db.execute("SHOW TABLES;");
 
-  if (tables[0].length < 2) {
+  if (!db) {
+    createDB();
     createTables();
-    console.log("Tables created");
+    console.log("Created new Database passwordManager");
   }
-  tables[0].map((table) => {
-    if (
-      table.Tables_in_passwordManager.includes("users") ||
-      table.Tables_in_passwordManager.includes("credentials")
-    ) {
-      console.log("Tables ready to use");
-      return true;
-    } else {
-      resetTables();
-      console.log("Tables reset, users and credentials empty");
-    }
-  });
+
+  checkTables();
 };
 
 initialize();

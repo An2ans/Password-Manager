@@ -1,5 +1,7 @@
 const mysql = require("mysql2/promise");
 
+const { createDB } = require("./dbService");
+
 const db_config = {
   user: "adminPM",
   password: "password",
@@ -20,6 +22,6 @@ exports.connect = async function () {
   } catch (error) {
     console.error("Error when connecting to db:", error);
     connection = undefined;
-    setTimeout(connect, 5000);
+    setTimeout(this.connect, 3000);
   }
 };

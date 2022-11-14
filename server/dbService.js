@@ -1,23 +1,28 @@
 const mysql = require("mysql2");
-const db = mysql.createConnection({
-  user: "adminPM",
-  password: "password",
-  host: "localhost",
-  database: "passwordManager",
-});
 
-exports.createDB = () => {
-  db.connect((err) => {
+// Import db promise from connection file
+const dbPromise = require("./dbConnect");
+
+// Create new db if not exist
+exports.createDB = async () => {
+  const db = mysql.createConnection({
+    user: "adminPM",
+    password: "password",
+    host: "localhost",
+  });
+
+  const dbResults = db.query("SHOW DATABASES LIKE 'passwordManager';");
+
+  console.log({ dbResults });
+
+  db.query("CREATE DATABASE IF NOT EXISTS passwordManager", (err) => {
     if (err) throw err;
-    console.log("Connected!");
-    db.query("CREATE DATABASE IF NOT EXIST passwordManager", (err) => {
-      if (err) throw err;
-      console.log("Database created!");
-    });
   });
 };
 
-exports.createTables = () => {
+exports.createTables = async () => {
+  const db = await dbPromise.connect();
+
   const credentialsTable = [
     "credentials_id INT AUTO_INCREMENT NOT NULL",
     "name VARCHAR(50) NOT NULL",
@@ -57,21 +62,37 @@ exports.createTables = () => {
   );
 };
 
-exports.resetTables = () => {
+exports.resetTables = async () => {
+  const db = await dbPromise.connect();
+
   db.query("DROP TABLE IF EXISTS credentials");
   db.query("DROP TABLE IF EXISTS users");
 
   this.createTables();
 };
 
-exports.checkTables = () => {
-  const tables = app.db.query("SHOW TABLES;", (err, results) => {
-    if (err) throw err;
-    return results;
-  });
+exports.checkTables = async () => {
+  const db = await dbPromise.connect();
+  const tables = await db.query("SHOW TABLES;");
 
-  if (tables.lenght < 2) {
-    return false;
+  console.log({ tables });
+
+  // Checking there are 2 tables with correct names, OW tables reset and check again
+  if (tables[0].length < 2) {
+    this.resetTables();
+    console.log("Tables reset");
   }
-  return true;
+  tables[0].map((table) => {
+    if (
+      table.Tables_in_passwordManager.includes("users") ||
+      table.Tables_in_passwordManager.includes("credentials")
+    ) {
+      console.log("Tables ready to use");
+      return true;
+    } else {
+      this.resetTables();
+      console.log("Tables reset, users and credentials empty");
+      setTimeout(this.checkTables, 2000);
+    }
+  });
 };
