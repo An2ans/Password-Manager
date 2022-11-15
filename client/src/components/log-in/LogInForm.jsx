@@ -6,7 +6,6 @@ import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined
 import "./styles.css";
 
 const LogInForm = ({
-  history,
   onSubmit,
   onChange,
   errors,
@@ -28,14 +27,6 @@ const LogInForm = ({
           value={user.username}
           onChange={onChange}
           helperText={errors.username}
-        />
-        <TextField
-          error={errors.email && true}
-          name="email"
-          label="Email"
-          value={user.email}
-          onChange={onChange}
-          helperText={errors.email}
         />
         <TextField
           error={errors.password && true}

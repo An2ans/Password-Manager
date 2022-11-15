@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import LogInForm from "./LogInForm.jsx";
-import { validateSignUpForm } from "../../utils/validators.js";
+import { validateLoginForm } from "../../utils/validators.js";
 import "./styles.css";
 
-const axios = require("axios");
-const zxcvbn = require("zxcvbn");
+import axios from "axios";
 
 class LogIn extends Component {
   constructor(props) {
@@ -14,7 +13,6 @@ class LogIn extends Component {
       errors: {},
       user: {
         username: "",
-        email: "",
         password: "",
       },
       btnTxt: "show",
@@ -25,7 +23,6 @@ class LogIn extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.submitSignup = this.submitSignup.bind(this);
     this.validateForm = this.validateForm.bind(this);
-    // this.pwHandleChange = this.pwHandleChange.bind(this);
   }
 
   handleChange(event) {
@@ -38,63 +35,40 @@ class LogIn extends Component {
     });
   }
 
-  // pwHandleChange(event) {
-  //   const field = event.target.name;
-  //   const user = this.state.user;
-  //   user[field] = event.target.value;
-
-  //   this.setState({
-  //     user,
-  //   });
-
-  //   if (event.target.value === "") {
-  //     this.setState((state) =>
-  //       Object.assign({}, state, {
-  //         score: "null",
-  //       })
-  //     );
-  //   } else {
-  //     var pw = zxcvbn(event.target.value);
-  //     this.setState((state) =>
-  //       Object.assign({}, state, {
-  //         score: pw.score + 1,
-  //       })
-  //     );
-  //   }
-  // }
-
   submitSignup(user) {
-    var params = { username: user.usr, password: user.pw, email: user.email };
-    // axios
-    //   .post("https://ouramazingserver.com/api/signup/submit", params)
-    //   .then((res) => {
-    //     if (res.data.success === true) {
-    //       localStorage.token = res.data.token;
-    //       localStorage.isAuthenticated = true;
-    //       window.location.reload();
-    //     } else {
-    //       this.setState({
-    //         errors: { message: res.data.message },
-    //       });
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log("Sign up data submit error: ", err);
-    //   });
-    // TO CHANGE WITH SERVER DETAILS
+    var params = { username: user.username, password: user.password };
+    try {
+      axios
+        .post("http://localhost:3001/auth", params)
+        .then((res) => {
+          if (res.data.success === true) {
+            localStorage.token = res.data.token;
+            localStorage.isAuthenticated = true;
+            window.location.reload();
+          } else {
+            this.setState({
+              errors: { message: res.data.message },
+            });
+          }
+        })
+        .catch((err) => {
+          console.log("Sign up data submit error: ", err);
+        });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   validateForm(event) {
     event.preventDefault();
-    var payload = validateSignUpForm(this.state.user);
+    var payload = validateLoginForm(this.state.user);
     if (payload.success) {
       this.setState({
         errors: {},
       });
       var user = {
-        usr: this.state.user.username,
-        pw: this.state.user.password,
-        email: this.state.user.email,
+        username: this.state.user.username,
+        password: this.state.user.password,
       };
       this.submitSignup(user);
     } else {

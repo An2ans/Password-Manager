@@ -1,7 +1,5 @@
 const mysql = require("mysql2/promise");
 
-const { createDB } = require("./dbService");
-
 const db_config = {
   user: "adminPM",
   password: "password",
