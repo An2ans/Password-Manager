@@ -3,13 +3,23 @@ const mysql = require("mysql2");
 // Import db promise from connection file
 const dbPromise = require("./dbConnect");
 
+var connection;
+
+function getConnection() {
+  if (typeof connection == "undefined") {
+    // connection =  connect to db;
+  }
+
+  return connection;
+}
+
+function closeConnection() {
+  connection.end();
+}
+
 // Create new db if not exist
 exports.createDB = async () => {
-  const db = mysql.createConnection({
-    user: "adminPM",
-    password: "password",
-    host: "localhost",
-  });
+  db = getConnection();
 
   const dbResults = db.query("SHOW DATABASES LIKE 'passwordManager';");
 
@@ -18,6 +28,7 @@ exports.createDB = async () => {
   db.query("CREATE DATABASE IF NOT EXISTS passwordManager", (err) => {
     if (err) throw err;
   });
+  closeConnection();
 };
 
 exports.createTables = async () => {
@@ -72,13 +83,15 @@ exports.resetTables = async () => {
 };
 
 exports.checkTables = async () => {
-  const db = await dbPromise.connect();
-  const tables = await db.query("SHOW TABLES;");
+  var db = await dbPromise.connect();
+  var tables = await db.query("SHOW TABLES;");
 
+  var success = false;
   console.log({ tables });
 
   // Checking there are 2 tables with correct names, OW tables reset and check again
   if (tables[0].length < 2) {
+    console.log("Needs to reset tables");
     this.resetTables();
     console.log("Tables reset");
   }
@@ -88,11 +101,53 @@ exports.checkTables = async () => {
       table.Tables_in_passwordManager.includes("credentials")
     ) {
       console.log("Tables ready to use");
-      return true;
+      success = true;
     } else {
       this.resetTables();
       console.log("Tables reset, users and credentials empty");
       setTimeout(this.checkTables, 2000);
+      success = false;
     }
   });
+
+  return success;
+};
+
+exports.findUser = async (username, password) => {
+  if (username && password) {
+    const db = await dbPromise.connect();
+
+    db.query(
+      "SELECT username, user_id FROM users WHERE username = ? AND password = ?;",
+      [username, password],
+      (error, results, fields) => {
+        if (error) {
+          console.log(error);
+        }
+        console.log({ results });
+        return results;
+      }
+    );
+  }
+};
+
+exports.initialize = async () => {
+  // const db = await dbPromise.connect();
+  // console.log(typeof db);
+  // if (db) {
+  // console.log("conectado");
+  return this.checkTables();
+
+  // db.end();
+  // } else {
+  // console.log("no conectado");
+  // }
+
+  // if (!db) {
+  //   createDB();
+  //   createTables();
+  //   console.log("Created new Database passwordManager");
+  // }
+
+  // checkTables();
 };

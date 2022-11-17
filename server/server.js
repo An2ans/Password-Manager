@@ -11,22 +11,16 @@ const {
   createDB,
   createTables,
   resetTables,
-  checkTables,
+  findUser,
+  initialize,
 } = require("./dbService");
 
-const initialize = async () => {
-  const db = await dbPromise.connect();
+app.get("/setup", (req, res) => {
+  var result = initialize();
+  res.json({ success: Boolean(result) });
+});
 
-  if (!db) {
-    createDB();
-    createTables();
-    console.log("Created new Database passwordManager");
-  }
-
-  checkTables();
-};
-
-initialize();
+// initialize();
 
 // We'll be using sessions to determine whether the user is logged-in or not.
 app.use(
@@ -50,43 +44,49 @@ app.get("/", (req, res) => {
 });
 
 app.post("/auth", async (req, res) => {
+  // Capture the input fields
+  const { username, password } = req.body;
+
   const db = await dbPromise.connect();
 
-  // Capture the input fields
-  const { username, password } = await req.body;
-
   console.log("user", username);
-  // Ensure the input fields exists and are not empty
-  if (username && password) {
-    // Execute SQL query that'll select the account from the database based on the specified username and password
-    db.query(
-      `SELECT * FROM users WHERE username = ${username} AND password = ${password};`,
-      [username, password],
-      (error, results) => {
-        // If there is an issue with the query, output the error
-        if (error) throw error;
-        // If the account exists
-        if (results.length > 0) {
-          // Authenticate the user
+  console.log("password", password);
 
-          console.log({ results });
+  results = await db.query(
+    "SELECT username, user_id FROM users WHERE username = ? AND password = ?;",
+    [username, password]
+  );
 
-          // const userId = results[0].user_id;
-
-          req.session.loggedin = true;
-          req.session.username = username;
-          // Redirect to home page
-          res.redirect("/");
-        } else {
-          res.send("Incorrect Username and/or Password!");
-        }
-        res.end();
-      }
-    );
-  } else {
-    res.send("Please enter Username and Password!");
-    res.end();
+  if (results[0].length < 1) {
+    res.send("User not found");
   }
+
+  const userId = results[0][0].user_id;
+  if (userId) {
+    console.log("user found");
+    res.json({
+      success: true,
+      body: {
+        user_id: userId,
+      },
+    });
+  } else {
+    res.json({
+      success: false,
+      message: "User " + username + "not found",
+    });
+  }
+
+  // Ensure the input fields exists and are not empty
+  // if (username && password) {
+  //   // Execute SQL query that'll select the account from the database based on the specified username and password
+  //   const userId = await findUser(username, password);
+  //   console.log(userId);
+  //   res.send(userId);
+  // } else {
+  //   res.send("Please enter Username and Password!");
+  //   res.end();
+  // }
 });
 
 // app.post('/test', async function (req, res) {
@@ -95,7 +95,7 @@ app.post("/auth", async (req, res) => {
 //     const query = 'SELECT [Password] as password FROM [Table] where [User] = ' + SqlString.escape(user);
 //     const pool = await sql.connect(dbConfig);
 //     const result = await pool.request()
-//       .query(querys);
+//       .query(querys); {}
 //     const password = result.recordset[0].password;
 //     console.log(password);
 //     res.end(password);
@@ -184,3 +184,29 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
+
+// try {
+//   const q = `SELECT * FROM users WHERE username = ? AND password = ?;`;
+//   db.query(q, [username, password], (error, results, fields) => {
+//     // If there is an issue with the query, output the error
+//     if (error) throw error;
+//     // If the account exists
+//     if (results.length > 0) {
+//       // Authenticate the user
+
+//       console.log({ results });
+
+//       // const userId = results[0].user_id;
+
+//       // req.session.loggedin = true;
+//       // req.session.username = username;
+//       // Redirect to home page
+//       res.redirect("/");
+//     } else {
+//       res.send("Incorrect Username and/or Password!");
+//     }
+//     res.end();
+//   });
+// } catch (err) {
+//   console.log(error);
+// }
