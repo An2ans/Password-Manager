@@ -20,7 +20,7 @@ exports.connect = async () => {
   return connection;
 };
 
-// Create new db if not exist
+// Create new db if not exist.
 exports.createDB = async () => {
   db = await mysql.createConnection({
     user: "adminPM",
@@ -41,6 +41,7 @@ exports.createDB = async () => {
   });
 };
 
+// Create users and credentials tables
 exports.createTables = async () => {
   const db = await this.connect();
 
@@ -87,45 +88,40 @@ exports.createTables = async () => {
   // });
 };
 
+// Drop the tables and create them again
 exports.resetTables = async () => {
   const db = await this.connect();
 
   await db.execute("DROP TABLE IF EXISTS credentials");
   await db.execute("DROP TABLE IF EXISTS users");
 
-  // db.end((err) => {
-  //   if (err) throw err;
-  // });
-
   this.createTables();
 };
 
+// Check  if tables created correctly
 exports.checkTables = async () => {
-  var db = await this.connect();
-  var tables = await db.query("SHOW TABLES;");
+  const db = await this.connect();
+  const tables = await db.query("SHOW TABLES;");
+  let success = undefined;
 
   console.log("tables", tables[0]);
 
-  // Checking there are 2 tables with correct names, OW tables reset and check again
   if (tables[0].length < 2) {
-    console.log("length / false");
-    return false;
+    success = false;
   }
   await tables[0].map((table) => {
     if (
       !table.Tables_in_passwordManager.includes("users") &&
       !table.Tables_in_passwordManager.includes("credentials")
     ) {
-      console.log("false contains");
-      return false;
+      success = false;
+      return success;
     } else {
-      console.log("true / contains");
-      return true;
+      success = true;
     }
   });
-  // db.end((err) => {
-  //   if (err) throw err;
-  // });
+
+  return success;
 };
 
 exports.findUser = async (username, password) => {
@@ -155,7 +151,7 @@ exports.initialize = async () => {
 
   if (!check) {
     await this.resetTables();
-    console.log("no check");
+    console.log("There was an error in the database, tables reset.");
   }
   console.log("DB & tables ready to use");
 };

@@ -11,6 +11,7 @@ const dbPromise = require("./dbConnect");
 
 const { connect, initialize } = require("./dbService");
 
+// Initialize creates the DB and tables (if not exist), connect to db and reset tables if data corrupted
 initialize();
 
 // app.get("/setup", (req, res) => {
