@@ -1,37 +1,15 @@
-const dbPromise = require("./dbConnect");
+const { connect } = require("./dbService");
 
 exports.getUser = async (username, password) => {
+  console.log("ON GET USER");
   if (username && password) {
-    const db = await dbPromise.connect();
+    const db = await connect();
 
-    db.query(
+    const results = await db.query(
       "SELECT username, user_id FROM users WHERE username = ? AND password = ?;",
-      [username, password],
-      (error, results, fields) => {
-        if (error) {
-          console.log(error);
-        }
-        console.log({ results });
-        return results[0];
-      }
+      [username, password]
     );
-  }
-};
-
-exports.findUser = async (username, password) => {
-  if (username && password) {
-    const db = await dbPromise.connect();
-
-    db.query(
-      "SELECT username, user_id FROM users WHERE username = ? AND password = ?;",
-      [username, password],
-      (error, results, fields) => {
-        if (error) {
-          console.log(error);
-        }
-        console.log({ results });
-        return results;
-      }
-    );
+    console.log("results on get user:", results[0]);
+    return results[0];
   }
 };

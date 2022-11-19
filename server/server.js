@@ -1,13 +1,11 @@
 const express = require("express");
 const cors = require("cors");
-const session = require("express-session");
+// const session = require("express-session");
 const app = express();
 
 const { encrypt, decrypt } = require("./encryption");
 
 const { getUser } = require("./userService");
-
-const dbPromise = require("./dbConnect");
 
 const { connect, initialize } = require("./dbService");
 
@@ -18,15 +16,6 @@ initialize();
 //   var result = initialize();
 //   res.json({ success: Boolean(result) });
 // });
-
-// We'll be using sessions to determine whether the user is logged-in or not.
-app.use(
-  session({
-    secret: "secret",
-    resave: true,
-    saveUninitialized: true,
-  })
-);
 
 app.use(cors());
 // parse requests of content-type - application/json
@@ -43,30 +32,35 @@ app.get("/", (req, res) => {
 app.post("/auth", async (req, res) => {
   // Capture the input fields
   const { username, password } = req.body;
-
-  // const db = await dbPromise.connect();
-
   try {
     const results = await getUser(username, password);
     console.log({ results });
-    if (results[0].length < 1 || !results) {
+
+    if ((await results[0].length) < 1 || !results) {
       console.log("User not found");
       res.send("User not found");
     }
 
-    const userId = results[0].user_id;
+    const userId = await results[0].user_id;
     if (userId) {
-      console.log("user found");
+      // Create the session for localStorage and send it
+
+      let session = {
+        userId: userId,
+        username: username,
+        created: new Date(),
+      };
+
       res.json({
         success: true,
-        body: {
-          user_id: userId,
-        },
+        session: session,
       });
+
+      console.log(`Logged in as ${username}`);
     } else {
       res.json({
         success: false,
-        message: "User " + username + "not found",
+        message: `User ${username} not found, please try again`,
       });
     }
   } catch (error) {
@@ -154,3 +148,16 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
+
+// We'll be using sessions to determine whether the user is logged-in or not.
+// app.use(
+//   session({
+//     secret: "secret",
+//     resave: true,
+//     saveUninitialized: true,
+//     cookie: {
+//       httpOnly: true,
+//       maxAge: 360000,
+//     },
+//   })
+// );

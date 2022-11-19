@@ -42,11 +42,9 @@ class LogIn extends Component {
         .post("http://localhost:3001/auth", params)
         .then((res) => {
           if (res.data.success === true) {
-            var userId = res.data.body.user_id;
-            console.log(userId);
-            // localStorage.token = res.data.token;
-            // localStorage.isAuthenticated = true;
-            // window.location.reload();
+            let session = JSON.stringify(res.data.session);
+            localStorage.setItem("session", session);
+            window.location.reload();
           } else {
             this.setState({
               errors: { message: res.data.message },

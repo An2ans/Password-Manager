@@ -3,20 +3,35 @@ import { Link } from "react-router-dom";
 import "../../styles/navbar.css";
 
 const Navbar = (props) => {
-  const [user, setUser] = useState(null);
+  const user = props.user;
+
+  const logOut = props.logOut;
 
   return (
     <nav className="navbar navbar-light">
       <div className="icon"></div>
       <ul className="options">
-        <li>Manager</li>
-        {user == null ? <li>Log In</li> : <li>${user}</li>}
+        <Link to="/">Manager </Link>
+        {user == null ? (
+          <Link to="/log-in">Log In </Link>
+        ) : (
+          <li>{user.username}</li>
+        )}
         {user == null ? (
           <li>
             <Link to="/sign-up">Sign Up </Link>
           </li>
         ) : (
-          <li>Settings</li>
+          <li>
+            <Link
+              to="/log-out"
+              onClick={() => {
+                logOut();
+              }}
+            >
+              Log Out{" "}
+            </Link>
+          </li>
         )}
       </ul>
     </nav>
