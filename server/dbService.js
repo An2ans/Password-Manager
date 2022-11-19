@@ -1,38 +1,48 @@
-const mysql = require("mysql2");
+const mysql = require("mysql2/promise");
 
-// Import db promise from connection file
-const dbPromise = require("./dbConnect");
+const db_config = {
+  user: "adminPM",
+  password: "password",
+  host: "localhost",
+  database: "passwordManager",
+};
 
 var connection;
 
-function getConnection() {
+// Connects checks for connection and create it, or return it if db is already connected, to avoid multiple connections
+exports.connect = async () => {
   if (typeof connection == "undefined") {
-    // connection =  connect to db;
+    connection = await mysql.createConnection(db_config);
+    console.log(`Connected to db ${db_config.database} at ${db_config.host}`);
+    return connection;
   }
 
   return connection;
-}
-
-function closeConnection() {
-  connection.end();
-}
+};
 
 // Create new db if not exist
 exports.createDB = async () => {
-  db = getConnection();
+  db = await mysql.createConnection({
+    user: "adminPM",
+    password: "password",
+    host: "localhost",
+  });
 
-  const dbResults = db.query("SHOW DATABASES LIKE 'passwordManager';");
+  const dbResults = await db.execute("SHOW DATABASES LIKE 'passwordManager';");
 
-  console.log({ dbResults });
+  if (dbResults[0].length < 1) {
+    await db.query("CREATE DATABASE IF NOT EXISTS passwordManager");
+    await this.createTables();
+    console.log("Database & tables created");
+  }
 
-  db.query("CREATE DATABASE IF NOT EXISTS passwordManager", (err) => {
+  db.end((err) => {
     if (err) throw err;
   });
-  closeConnection();
 };
 
 exports.createTables = async () => {
-  const db = await dbPromise.connect();
+  const db = await this.connect();
 
   const credentialsTable = [
     "credentials_id INT AUTO_INCREMENT NOT NULL",
@@ -54,63 +64,68 @@ exports.createTables = async () => {
     "PRIMARY KEY (user_id));",
   ];
 
-  db.query(
+  await db.query(
     "CREATE TABLE IF NOT EXISTS users (" +
       usersTable.map((field) => {
         return field;
       })
   );
 
-  db.query(
+  await db.query(
     "CREATE TABLE IF NOT EXISTS credentials (" +
       credentialsTable.map((field) => {
         return field;
       })
   );
 
-  db.query(
-    "INSERT INTO users (user_id, username, password, email) VALUES (1, 'test', 'test', 'test@test.com');"
+  await db.query(
+    "INSERT INTO users (user_id, username, password, email) VALUES (1, 'test', 'testtest', 'test@test.com');"
   );
+
+  // db.end((err) => {
+  //   if (err) throw err;
+  // });
 };
 
 exports.resetTables = async () => {
-  const db = await dbPromise.connect();
+  const db = await this.connect();
 
-  db.query("DROP TABLE IF EXISTS credentials");
-  db.query("DROP TABLE IF EXISTS users");
+  await db.execute("DROP TABLE IF EXISTS credentials");
+  await db.execute("DROP TABLE IF EXISTS users");
+
+  // db.end((err) => {
+  //   if (err) throw err;
+  // });
 
   this.createTables();
 };
 
 exports.checkTables = async () => {
-  var db = await dbPromise.connect();
+  var db = await this.connect();
   var tables = await db.query("SHOW TABLES;");
 
-  var success = false;
-  console.log({ tables });
+  console.log("tables", tables[0]);
 
   // Checking there are 2 tables with correct names, OW tables reset and check again
   if (tables[0].length < 2) {
-    console.log("Needs to reset tables");
-    this.resetTables();
-    console.log("Tables reset");
+    console.log("length / false");
+    return false;
   }
-  tables[0].map((table) => {
+  await tables[0].map((table) => {
     if (
-      table.Tables_in_passwordManager.includes("users") ||
-      table.Tables_in_passwordManager.includes("credentials")
+      !table.Tables_in_passwordManager.includes("users") &&
+      !table.Tables_in_passwordManager.includes("credentials")
     ) {
-      console.log("Tables ready to use");
-      success = true;
+      console.log("false contains");
+      return false;
     } else {
-      this.resetTables();
-      console.log("Tables reset, users and credentials empty");
-      setTimeout(this.checkTables, 2000);
-      success = false;
+      console.log("true / contains");
+      return true;
     }
   });
-
-  return success;
+  // db.end((err) => {
+  //   if (err) throw err;
+  // });
 };
 
 exports.findUser = async (username, password) => {
@@ -132,22 +147,15 @@ exports.findUser = async (username, password) => {
 };
 
 exports.initialize = async () => {
-  // const db = await dbPromise.connect();
-  // console.log(typeof db);
-  // if (db) {
-  // console.log("conectado");
-  return this.checkTables();
+  await this.createDB();
 
-  // db.end();
-  // } else {
-  // console.log("no conectado");
-  // }
+  const check = await this.checkTables();
 
-  // if (!db) {
-  //   createDB();
-  //   createTables();
-  //   console.log("Created new Database passwordManager");
-  // }
+  console.log({ check });
 
-  // checkTables();
+  if (!check) {
+    await this.resetTables();
+    console.log("no check");
+  }
+  console.log("DB & tables ready to use");
 };
