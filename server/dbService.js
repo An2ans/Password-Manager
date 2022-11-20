@@ -1,27 +1,49 @@
-const mysql = require("mysql2");
+const mysql = require("mysql2/promise");
 
-// Import db promise from connection file
-const dbPromise = require("./dbConnect");
+const db_config = {
+  user: "adminPM",
+  password: "password",
+  host: "localhost",
+  database: "passwordManager",
+};
 
-// Create new db if not exist
+var connection;
+
+// Connects checks for connection and create it, or return it if db is already connected, to avoid multiple connections
+exports.connect = async () => {
+  if (typeof connection == "undefined") {
+    connection = await mysql.createConnection(db_config);
+    console.log(`Connected to db ${db_config.database} at ${db_config.host}`);
+    return connection;
+  }
+
+  return connection;
+};
+
+// Create new db if not exist.
 exports.createDB = async () => {
-  const db = mysql.createConnection({
+  db = await mysql.createConnection({
     user: "adminPM",
     password: "password",
     host: "localhost",
   });
 
-  const dbResults = db.query("SHOW DATABASES LIKE 'passwordManager';");
+  const dbResults = await db.execute("SHOW DATABASES LIKE 'passwordManager';");
 
-  console.log({ dbResults });
+  if (dbResults[0].length < 1) {
+    await db.query("CREATE DATABASE IF NOT EXISTS passwordManager");
+    await this.createTables();
+    console.log("Database & tables created");
+  }
 
-  db.query("CREATE DATABASE IF NOT EXISTS passwordManager", (err) => {
+  db.end((err) => {
     if (err) throw err;
   });
 };
 
+// Create users and credentials tables
 exports.createTables = async () => {
-  const db = await dbPromise.connect();
+  const db = await this.connect();
 
   const credentialsTable = [
     "credentials_id INT AUTO_INCREMENT NOT NULL",
@@ -43,56 +65,75 @@ exports.createTables = async () => {
     "PRIMARY KEY (user_id));",
   ];
 
-  db.query(
+  await db.query(
     "CREATE TABLE IF NOT EXISTS users (" +
       usersTable.map((field) => {
         return field;
       })
   );
 
-  db.query(
+  await db.query(
     "CREATE TABLE IF NOT EXISTS credentials (" +
       credentialsTable.map((field) => {
         return field;
       })
   );
 
-  db.query(
-    "INSERT INTO users (user_id, username, password, email) VALUES (1, 'test', 'test', 'test@test.com');"
+  await db.query(
+    "INSERT INTO users (user_id, username, password, email) VALUES (1, 'test', 'testtest', 'test@test.com');"
   );
+
+  // db.end((err) => {
+  //   if (err) throw err;
+  // });
 };
 
+// Drop the tables and create them again
 exports.resetTables = async () => {
-  const db = await dbPromise.connect();
+  const db = await this.connect();
 
-  db.query("DROP TABLE IF EXISTS credentials");
-  db.query("DROP TABLE IF EXISTS users");
+  await db.execute("DROP TABLE IF EXISTS credentials");
+  await db.execute("DROP TABLE IF EXISTS users");
 
   this.createTables();
 };
 
+// Check  if tables created correctly
 exports.checkTables = async () => {
-  const db = await dbPromise.connect();
+  const db = await this.connect();
   const tables = await db.query("SHOW TABLES;");
+  let success = undefined;
 
-  console.log({ tables });
+  console.log("tables", tables[0]);
 
-  // Checking there are 2 tables with correct names, OW tables reset and check again
   if (tables[0].length < 2) {
-    this.resetTables();
-    console.log("Tables reset");
+    success = false;
   }
-  tables[0].map((table) => {
+  await tables[0].map((table) => {
     if (
-      table.Tables_in_passwordManager.includes("users") ||
-      table.Tables_in_passwordManager.includes("credentials")
+      !table.Tables_in_passwordManager.includes("users") &&
+      !table.Tables_in_passwordManager.includes("credentials")
     ) {
-      console.log("Tables ready to use");
-      return true;
+      success = false;
+      return success;
     } else {
-      this.resetTables();
-      console.log("Tables reset, users and credentials empty");
-      setTimeout(this.checkTables, 2000);
+      success = true;
     }
   });
+
+  return success;
+};
+
+exports.initialize = async () => {
+  await this.createDB();
+
+  const check = await this.checkTables();
+
+  console.log({ check });
+
+  if (!check) {
+    await this.resetTables();
+    console.log("There was an error in the database, tables reset.");
+  }
+  console.log("DB & tables ready to use");
 };

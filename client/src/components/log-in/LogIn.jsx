@@ -21,7 +21,7 @@ class LogIn extends Component {
 
     this.pwMask = this.pwMask.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.submitSignup = this.submitSignup.bind(this);
+    this.submitLogin = this.submitLogin.bind(this);
     this.validateForm = this.validateForm.bind(this);
   }
 
@@ -35,15 +35,15 @@ class LogIn extends Component {
     });
   }
 
-  submitSignup(user) {
+  submitLogin(user) {
     var params = { username: user.username, password: user.password };
     try {
       axios
         .post("http://localhost:3001/auth", params)
         .then((res) => {
           if (res.data.success === true) {
-            localStorage.token = res.data.token;
-            localStorage.isAuthenticated = true;
+            let session = JSON.stringify(res.data.session);
+            localStorage.setItem("session", session);
             window.location.reload();
           } else {
             this.setState({
@@ -70,7 +70,7 @@ class LogIn extends Component {
         username: this.state.user.username,
         password: this.state.user.password,
       };
-      this.submitSignup(user);
+      this.submitLogin(user);
     } else {
       const errors = payload.errors;
       this.setState({

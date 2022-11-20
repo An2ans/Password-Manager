@@ -1,41 +1,21 @@
 const express = require("express");
 const cors = require("cors");
-const session = require("express-session");
+// const session = require("express-session");
 const app = express();
 
 const { encrypt, decrypt } = require("./encryption");
 
-const dbPromise = require("./dbConnect");
+const { getUser, createUser } = require("./userService");
 
-const {
-  createDB,
-  createTables,
-  resetTables,
-  checkTables,
-} = require("./dbService");
+const { connect, initialize } = require("./dbService");
 
-const initialize = async () => {
-  const db = await dbPromise.connect();
-
-  if (!db) {
-    createDB();
-    createTables();
-    console.log("Created new Database passwordManager");
-  }
-
-  checkTables();
-};
-
+// Initialize creates the DB and tables (if not exist), connect to db and reset tables if data corrupted
 initialize();
 
-// We'll be using sessions to determine whether the user is logged-in or not.
-app.use(
-  session({
-    secret: "secret",
-    resave: true,
-    saveUninitialized: true,
-  })
-);
+// app.get("/setup", (req, res) => {
+//   var result = initialize();
+//   res.json({ success: Boolean(result) });
+// });
 
 app.use(cors());
 // parse requests of content-type - application/json
@@ -49,60 +29,62 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to bezkoder application." });
 });
 
+// Login User: I use getUser function to search in DB for the user, if found it returns the id and create the session
 app.post("/auth", async (req, res) => {
-  const db = await dbPromise.connect();
-
   // Capture the input fields
-  const { username, password } = await req.body;
+  const { username, password } = req.body;
+  try {
+    const results = await getUser(username, password);
+    console.log({ results });
 
-  console.log("user", username);
-  // Ensure the input fields exists and are not empty
-  if (username && password) {
-    // Execute SQL query that'll select the account from the database based on the specified username and password
-    db.query(
-      `SELECT * FROM users WHERE username = ${username} AND password = ${password};`,
-      [username, password],
-      (error, results) => {
-        // If there is an issue with the query, output the error
-        if (error) throw error;
-        // If the account exists
-        if (results.length > 0) {
-          // Authenticate the user
+    if ((await results[0].length) < 1 || !results) {
+      console.log("User not found");
+      res.send("User not found");
+    }
 
-          console.log({ results });
+    const userId = await results[0].user_id;
+    if (userId) {
+      // Create the session for localStorage and send it
 
-          // const userId = results[0].user_id;
+      let session = {
+        userId: userId,
+        username: username,
+        created: new Date(),
+      };
 
-          req.session.loggedin = true;
-          req.session.username = username;
-          // Redirect to home page
-          res.redirect("/");
-        } else {
-          res.send("Incorrect Username and/or Password!");
-        }
-        res.end();
-      }
-    );
-  } else {
-    res.send("Please enter Username and Password!");
-    res.end();
+      res.json({
+        success: true,
+        session: session,
+      });
+
+      console.log(`Logged in as ${username}`);
+    } else {
+      res.json({
+        success: false,
+        message: `User ${username} not found, please try again`,
+      });
+    }
+  } catch (error) {
+    console.log(error);
   }
 });
 
-// app.post('/test', async function (req, res) {
-//   try {
-//     const user = 'User';
-//     const query = 'SELECT [Password] as password FROM [Table] where [User] = ' + SqlString.escape(user);
-//     const pool = await sql.connect(dbConfig);
-//     const result = await pool.request()
-//       .query(querys);
-//     const password = result.recordset[0].password;
-//     console.log(password);
-//     res.end(password);
-//   } catch (e) {
-//     res.end(e.message || e.toString());
-//   }
-// });
+app.post("/sign-up", (req, res) => {
+  const { username, password, email } = req.body;
+  if (username && password && email) {
+    createUser({ username, password, email });
+    res.json({
+      success: true,
+      user: { username, password },
+      message: `User ${username} successfully created`,
+    });
+  } else {
+    res.json({
+      success: false,
+      message: `User not valid, please try again`,
+    });
+  }
+});
 
 // ADD NEW CREDENTIALS
 app.post("/add", (req, res) => {
@@ -184,3 +166,16 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
+
+// We'll be using sessions to determine whether the user is logged-in or not.
+// app.use(
+//   session({
+//     secret: "secret",
+//     resave: true,
+//     saveUninitialized: true,
+//     cookie: {
+//       httpOnly: true,
+//       maxAge: 360000,
+//     },
+//   })
+// );
