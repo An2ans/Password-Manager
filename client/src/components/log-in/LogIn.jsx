@@ -21,7 +21,7 @@ class LogIn extends Component {
 
     this.pwMask = this.pwMask.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.submitSignup = this.submitSignup.bind(this);
+    this.submitLogin = this.submitLogin.bind(this);
     this.validateForm = this.validateForm.bind(this);
   }
 
@@ -35,7 +35,7 @@ class LogIn extends Component {
     });
   }
 
-  submitSignup(user) {
+  submitLogin(user) {
     var params = { username: user.username, password: user.password };
     try {
       axios
@@ -70,7 +70,7 @@ class LogIn extends Component {
         username: this.state.user.username,
         password: this.state.user.password,
       };
-      this.submitSignup(user);
+      this.submitLogin(user);
     } else {
       const errors = payload.errors;
       this.setState({

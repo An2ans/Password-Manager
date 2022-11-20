@@ -5,7 +5,7 @@ const app = express();
 
 const { encrypt, decrypt } = require("./encryption");
 
-const { getUser } = require("./userService");
+const { getUser, createUser } = require("./userService");
 
 const { connect, initialize } = require("./dbService");
 
@@ -29,6 +29,7 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to bezkoder application." });
 });
 
+// Login User: I use getUser function to search in DB for the user, if found it returns the id and create the session
 app.post("/auth", async (req, res) => {
   // Capture the input fields
   const { username, password } = req.body;
@@ -65,6 +66,23 @@ app.post("/auth", async (req, res) => {
     }
   } catch (error) {
     console.log(error);
+  }
+});
+
+app.post("/sign-up", (req, res) => {
+  const { username, password, email } = req.body;
+  if (username && password && email) {
+    createUser({ username, password, email });
+    res.json({
+      success: true,
+      user: { username, password },
+      message: `User ${username} successfully created`,
+    });
+  } else {
+    res.json({
+      success: false,
+      message: `User not valid, please try again`,
+    });
   }
 });
 

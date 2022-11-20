@@ -13,3 +13,20 @@ exports.getUser = async (username, password) => {
     return results[0];
   }
 };
+
+exports.createUser = async (user) => {
+  const { username, password, email } = user;
+
+  try {
+    const db = await connect();
+
+    await db.query(
+      "INSERT INTO users (username, password, email) VALUES(?, ?, ?);",
+      [username, password, email]
+    );
+
+    console.log(`User ${username} successfully created"!`);
+  } catch (error) {
+    console.log("Error while creating user", error);
+  }
+};

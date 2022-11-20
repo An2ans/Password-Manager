@@ -3,7 +3,7 @@ import SignUpForm from "./SignUpForm.jsx";
 import { validateSignUpForm } from "../../utils/validators.js";
 import "./styles.css";
 
-const axios = require("axios");
+import axios from "axios";
 const zxcvbn = require("zxcvbn");
 
 class SignUp extends Component {
@@ -66,23 +66,36 @@ class SignUp extends Component {
   }
 
   submitSignup(user) {
-    var params = { username: user.usr, password: user.pw, email: user.email };
-    // axios
-    //   .post("https://ouramazingserver.com/api/signup/submit", params)
-    //   .then((res) => {
-    //     if (res.data.success === true) {
-    //       localStorage.token = res.data.token;
-    //       localStorage.isAuthenticated = true;
-    //       window.location.reload();
-    //     } else {
-    //       this.setState({
-    //         errors: { message: res.data.message },
-    //       });
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log("Sign up data submit error: ", err);
-    //   });
+    var params = {
+      username: user.username,
+      password: user.password,
+      email: user.email,
+    };
+
+    console.log({ params });
+    axios
+      .post("http://localhost:3001/sign-up", params)
+      .then((res) => {
+        if (res.data.success === true) {
+          console.log("PRIMER SUCCESS");
+          let newUser = res.data.user;
+          axios.post("http://localhost:3001/auth", newUser).then((res) => {
+            if (res.data.success === true) {
+              console.log("SEGUNDO SUCCESS");
+              let session = JSON.stringify(res.data.session);
+              localStorage.setItem("session", session);
+              window.location.reload();
+            }
+          });
+        } else {
+          this.setState({
+            errors: { message: res.data.message },
+          });
+        }
+      })
+      .catch((err) => {
+        console.log("Sign up data submit error: ", err);
+      });
     // TO CHANGE WITH SERVER DETAILS
   }
 
@@ -94,8 +107,8 @@ class SignUp extends Component {
         errors: {},
       });
       var user = {
-        usr: this.state.user.username,
-        pw: this.state.user.password,
+        username: this.state.user.username,
+        password: this.state.user.password,
         email: this.state.user.email,
       };
       this.submitSignup(user);
