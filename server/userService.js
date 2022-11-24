@@ -30,3 +30,7 @@ exports.createUser = async (user) => {
     console.log("Error while creating user", error);
   }
 };
+
+//deleteUser
+
+//updatePassword

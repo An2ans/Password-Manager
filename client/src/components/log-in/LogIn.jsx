@@ -37,26 +37,28 @@ class LogIn extends Component {
 
   submitLogin(user) {
     var params = { username: user.username, password: user.password };
-    try {
-      axios
-        .post("http://localhost:3001/auth", params)
-        .then((res) => {
-          if (res.data.success === true) {
-            let session = JSON.stringify(res.data.session);
-            localStorage.setItem("session", session);
-            window.location.reload();
-          } else {
-            this.setState({
-              errors: { message: res.data.message },
-            });
-          }
-        })
-        .catch((err) => {
-          console.log("Sign up data submit error: ", err);
+    axios
+      .post("http://localhost:3001/auth", params)
+      .then((res) => {
+        if (res.data.success === true) {
+          let session = JSON.stringify(res.data.session);
+          localStorage.setItem("session", session);
+          window.location.reload();
+        } else {
+          this.setState({
+            errors: { message: res.data.message },
+          });
+        }
+      })
+      .catch((err) => {
+        console.log("Sign up data submit error: ", err);
+        this.setState({
+          errors: {
+            message: "Connection Error: Unable to connect to server",
+            err,
+          },
         });
-    } catch (err) {
-      console.log(err);
-    }
+      });
   }
 
   validateForm(event) {
