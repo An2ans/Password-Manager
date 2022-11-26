@@ -10,7 +10,9 @@ router.post("/user", userController.createUser);
 router.get("/user", userController.listUsers);
 // Find User by Id
 router.get("/user/:id", userController.findUserById);
-//
-// router.put("/user/:id", userController.updateUserById);
+// Update User info
+router.put("/user/:id", userController.updateUserById);
+// Delete User
+router.delete("/user/:id", userController.deleteUserById);
 
 module.exports = router;

@@ -52,13 +52,34 @@ exports.findUserById = async (id) => {
   return results;
 };
 
-// exports.updateUserById = async (id, updatedUser) => {
-//   const con = await db.connect();
+exports.updateUserById = async (id, updatedUser) => {
+  const con = await db.connect();
 
-//   const { newName, newPassword, newEmail } = updatedUser;
+  const { username, password, email } = await updatedUser;
 
-//   await con.query(
-//     "INSERT INTO users (username, email, password) VALUES(?, ?, ?) WHERE user_id = ?",
-//     [newName, newPassword, newEmail, id]
-//   );
-// };
+  await con.query(
+    "UPDATE users SET username = ?, email = ?, password = ? WHERE user_id = ?",
+    [username, password, email, parseInt(id)],
+    (err, res) => {
+      if (err) {
+        console.log(err);
+        return false;
+      } else {
+        return true;
+      }
+    }
+  );
+};
+
+exports.deleteUserById = async (id) => {
+  const con = await db.connect();
+
+  await con.query("DELETE FROM users WHERE user_id = ?", [id], (err, res) => {
+    if (err) {
+      console.log(err);
+      return false;
+    } else {
+      return true;
+    }
+  });
+};

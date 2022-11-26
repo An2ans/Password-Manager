@@ -22,14 +22,25 @@ const findUserById = async (req, res, next) => {
   res.send(user);
 };
 
-// const updateUserById = async (req, res, next) => {
-//   const id = await req.params.id;
+const updateUserById = async (req, res, next) => {
+  const id = req.params.id;
+  const updatedUser = req.body;
 
-//   const updatedUser = await req.body;
+  await repository.updateUserById(id, updatedUser);
+  res.json(`User ${id} successfully updated`);
+};
 
-//   if ((await findUserById(id).length) > 0) {
-//     await repository.updateUserById(id, updatedUser);
-//     res.json(`User ${username} successfully updated`);
-//   }
-// };
-module.exports = { createUser, listUsers, findUserById, updateUserById };
+const deleteUserById = async (req, res, next) => {
+  const id = req.params.id;
+
+  await repository.deleteUserById(id);
+  res.json(`User ${id} successfully deleted`);
+};
+
+module.exports = {
+  createUser,
+  listUsers,
+  findUserById,
+  updateUserById,
+  deleteUserById,
+};
