@@ -13,6 +13,7 @@ import Navbar from "./components/navbar/Navbar";
 import SignUp from "./components/sign-up/SignUp";
 import LogIn from "./components/log-in/LogIn";
 import Manager from "./components/manager/Manager";
+import Welcome from "./components/welcome/Welcome";
 
 // Material ui for front-end
 // ADD User funtionallity with restriction
@@ -59,7 +60,11 @@ class App extends Component {
         </div>
 
         <Routes>
-          <Route exact path="/" element={<Manager />}></Route>
+          <Route
+            exact
+            path="/"
+            element={this.state.isLoggedIn ? <Manager /> : <Welcome />}
+          ></Route>
           <Route
             exact
             path="/sign-up"
