@@ -9,6 +9,7 @@ class Manager extends Component {
     this.state = {
       errors: {},
       user: null,
+      credentials: [],
     };
   }
 
@@ -33,6 +34,8 @@ class Manager extends Component {
   //   });
   // }
 
+  getCredentials = () => {};
+
   render() {
     return (
       <Box textAlign="center">
@@ -44,3 +47,40 @@ class Manager extends Component {
 }
 
 export default Manager;
+
+// const ManagerPage = () => {
+
+//   useEffect(() => {
+//     getCredentials(1).then((response) => {
+//       setCredentials(response.data);
+//     });
+//   }, [credentials]);
+
+//   return (
+//     <div className="manager-container">
+//       <ModalInfo message={message || ""} />
+//       <table className="table">
+//         <thead>
+//           <tr>
+//             <th className="name">Password Name</th>
+//             <th className="credentials">Show credentials</th>
+//             <th className="edit">Edit Password</th>
+//           </tr>
+//         </thead>
+//         <tbody>
+//           {credentials.map((pass) => {
+//             return (
+//               <PasswordCard
+//                 key={pass.id}
+//                 passId={pass.id}
+//                 passName={pass.name}
+//                 passUrl={pass.url}
+//               />
+//             );
+//           })}
+//         </tbody>
+//       </table>
+//       <ModalAdd />
+//     </div>
+//   );
+// };
