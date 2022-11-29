@@ -14,5 +14,7 @@ router.get("/user/:id", userController.findUserById);
 router.put("/user/:id", userController.updateUserById);
 // Delete User
 router.delete("/user/:id", userController.deleteUserById);
+// To Login User
+router.post("/auth", userController.authUser);
 
 module.exports = router;

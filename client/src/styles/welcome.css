@@ -1,10 +1,14 @@
 .welcome-page {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   text-align: center;
+  padding: 2rem;
+  min-height: 80%;
+  justify-content: space-between;
 }
 
 .title {
-  font-size: 2rem;
+  font-size: 3.8rem;
+  color: #fefefe;
+  line-height: 6.8rem;
 }

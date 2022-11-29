@@ -27,12 +27,12 @@ exports.listUsers = async () => {
         console.log(err);
         return [];
       } else {
-        return res[0];
+        return res;
       }
     }
   );
 
-  return users;
+  return users[0];
 };
 
 exports.findUserById = async (id) => {
@@ -59,7 +59,7 @@ exports.updateUserById = async (id, updatedUser) => {
 
   await con.query(
     "UPDATE users SET username = ?, email = ?, password = ? WHERE user_id = ?",
-    [username, password, email, parseInt(id)],
+    [username, email, password, parseInt(id)],
     (err, res) => {
       if (err) {
         console.log(err);
@@ -82,4 +82,24 @@ exports.deleteUserById = async (id) => {
       return true;
     }
   });
+};
+
+exports.authUser = async (login) => {
+  const con = await db.connect();
+
+  const { username, password } = login;
+
+  const results = await con.query(
+    "SELECT * FROM users WHERE username = ? AND password = ?;",
+    [username, password],
+    (err, res) => {
+      if (err) {
+        console.log(err);
+        return false;
+      } else {
+        return res;
+      }
+    }
+  );
+  return results[0];
 };

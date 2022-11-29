@@ -51,7 +51,7 @@ class LogIn extends Component {
         }
       })
       .catch((err) => {
-        console.log("Sign up data submit error: ", err);
+        console.log("Log in data submit error: ", err);
         this.setState({
           errors: {
             message: "Connection Error: Unable to connect to server",

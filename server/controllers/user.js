@@ -1,6 +1,7 @@
 const repository = require("../repositories/user");
 
 const createUser = (req, res, next) => {
+  // CRYPT & DECRYPT
   const { username, email, password } = req.body;
   const result = repository.createUser(username, email, password);
   if (result) {
@@ -23,6 +24,7 @@ const findUserById = async (req, res, next) => {
 };
 
 const updateUserById = async (req, res, next) => {
+  // CRYPT & DECRYPT
   const id = req.params.id;
   const updatedUser = req.body;
 
@@ -37,10 +39,34 @@ const deleteUserById = async (req, res, next) => {
   res.json(`User ${id} successfully deleted`);
 };
 
+const authUser = async (req, res, next) => {
+  // CRYPT & DECRYPT
+
+  const login = req.body;
+
+  const user = await repository.authUser(login);
+
+  if (user.length < 1 || !user) {
+    res.json({ success: false, message: "User not found, please try again" });
+  } else {
+    let session = {
+      userId: user[0].user_id,
+      username: user[0].username,
+      created: new Date(),
+    };
+
+    res.json({
+      success: true,
+      session: session,
+    });
+  }
+};
+
 module.exports = {
   createUser,
   listUsers,
   findUserById,
   updateUserById,
   deleteUserById,
+  authUser,
 };

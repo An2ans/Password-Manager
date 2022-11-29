@@ -44,6 +44,7 @@ class App extends Component {
 
   logOut() {
     localStorage.clear();
+    this.setState({ session: null, isLoggedIn: false });
     console.log("logged out");
     window.location.reload();
   }
