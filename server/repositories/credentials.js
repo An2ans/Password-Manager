@@ -30,3 +30,44 @@ exports.getAllCredentials = async () => {
   }
   return [];
 };
+
+exports.getUserCredentials = async (userId) => {
+  const con = await db.connect();
+
+  const results = await con.query(
+    "SELECT * FROM credentials WHERE user_id = ?;",
+    [userId]
+  );
+
+  if (results[0]) {
+    return results[0];
+  }
+  return [];
+};
+
+exports.updateCredentials = async (
+  userId,
+  credentialsId,
+  updatedCredentials
+) => {
+  const con = await db.connect();
+
+  const { name, url, username, password } = updatedCredentials;
+
+  const success = await con.query(
+    "UPDATE credentials SET name = ?, url = ?, username = ?, password = ? WHERE credentials_id = ? AND user_id = ?;",
+    [name, url, username, password, credentialsId, userId],
+    (err, res) => {
+      if (err) {
+        console.log(err);
+        return false;
+      }
+    }
+  );
+
+  if (success[0].affectedRows == 0) {
+    return false;
+  } else {
+    return true;
+  }
+};

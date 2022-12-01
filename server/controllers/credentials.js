@@ -27,3 +27,36 @@ exports.getAllCredentials = async (req, res, next) => {
     res.json({ success: false, message: "Couldn't retrieve any credentials" });
   }
 };
+
+exports.getUserCredentials = async (req, res, next) => {
+  const userId = req.params.userId;
+
+  const results = await repository.getUserCredentials(userId);
+
+  if (results.length > 0) {
+    res.json(results);
+  } else {
+    res.json({ success: false, message: "Couldn't retrieve any credentials" });
+  }
+};
+
+exports.updateCredentials = async (req, res, next) => {
+  const userId = req.params.userId;
+
+  const { updatedCredentials, credentialsId } = req.body;
+
+  const success = await repository.updateCredentials(
+    userId,
+    credentialsId,
+    updatedCredentials
+  );
+
+  if (success === false) {
+    res.json({
+      success: false,
+      message: "Sorry, we were unable to update the credentials",
+    });
+  } else {
+    res.json({ success: true, message: "Credentials updated" });
+  }
+};
