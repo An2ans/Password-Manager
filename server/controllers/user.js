@@ -13,7 +13,6 @@ const createUser = (req, res, next) => {
 
 const listUsers = async (req, res, next) => {
   const users = await repository.listUsers();
-  console.log(users);
   res.json(users);
 };
 

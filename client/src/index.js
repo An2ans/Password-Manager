@@ -14,6 +14,7 @@ import SignUp from "./components/sign-up/SignUp";
 import LogIn from "./components/log-in/LogIn";
 import Manager from "./components/manager/Manager";
 import Welcome from "./components/welcome/Welcome";
+import AdminTable from "./components/admin/admin";
 
 // Material ui for front-end
 // ADD User funtionallity with restriction
@@ -84,6 +85,11 @@ class App extends Component {
             exact
             path="/log-out"
             element={<Navigate replace to="/" />}
+          ></Route>
+          <Route
+            exact
+            path="/admin"
+            element={this.state.isLoggedIn ? <AdminTable /> : <LogIn />}
           ></Route>
         </Routes>
       </Router>
