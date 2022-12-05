@@ -1,6 +1,9 @@
 import { Box } from "@mui/material";
 import React, { Component, useEffect } from "react";
 import { redirect } from "react-router-dom";
+import axios from "axios";
+
+import Card from "./Card";
 
 class Manager extends Component {
   constructor(props) {
@@ -8,9 +11,10 @@ class Manager extends Component {
 
     this.state = {
       errors: {},
-      user: null,
+      session: null,
       credentials: [],
     };
+    this.getCredentials = this.getCredentials.bind(this);
   }
 
   componentDidMount() {
@@ -19,28 +23,29 @@ class Manager extends Component {
       redirect("/log-in");
     } else {
       this.setState({ session: session });
+      this.getCredentials(session.userId);
     }
   }
 
-  // updateUser() {
-  //   useEffect(() => {
-  //     const session = JSON.parse(localStorage.getItem("session"));
-  //     console.log("session en manager", session);
-  //     if (session) {
-  //       this.setState({ user: session });
-  //     } else {
-  //       this.setState({ errors: { message: "no session found" } });
-  //     }
-  //   });
-  // }
-
-  getCredentials = () => {};
+  // Get the credentials when component mount
+  getCredentials = (userId) => {
+    axios.get(`http://localhost:3001/credentials/${userId}`).then((res) => {
+      this.setState({ credentials: res.data });
+    });
+  };
 
   render() {
+    const credentials = this.state.credentials;
     return (
       <Box textAlign="center">
-        {/* <h1>USERNAME: {this.state.session.username || ""}</h1>
-        <p>ID: {this.state.session.userId || ""}</p> */}
+        {credentials.length > 1 ? (
+          credentials.map((cred) => {
+            let { id, name, url } = cred;
+            return <Card key={id} id={id} name={name} url={url} />;
+          })
+        ) : (
+          <h2>No credentials found</h2>
+        )}
       </Box>
     );
   }

@@ -5,12 +5,19 @@ const router = express.Router();
 const credentialsController = require("../controllers/credentials");
 
 // Create new credentials
-router.post("/credentials/add", credentialsController.createCredentials);
+router.post("/credentials", credentialsController.createCredentials);
 // Get all credentials
 router.get("/credentials", credentialsController.getAllCredentials);
 // Get credentials by userId
 router.get("/credentials/:userId", credentialsController.getUserCredentials);
 // Update the credentials
-router.put("/credentials/:userId", credentialsController.updateCredentials);
+router.put(
+  "/credentials/:userId/:credId",
+  credentialsController.updateCredentials
+);
+
+//ACTUALIZAR UPDATE CON 2 QUERY
+
+// ADD DELETE CREDENTIALS
 
 module.exports = router;

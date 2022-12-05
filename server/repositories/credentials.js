@@ -71,3 +71,15 @@ exports.updateCredentials = async (
     return true;
   }
 };
+
+exports.showCredentials = async (userId, credId) => {
+  const con = await db.connect();
+
+  const results = await con.query(
+    "SELECT username, password FROM credentials WHERE user_id = ? AND credentials_id = ?",
+    userId,
+    credId
+  );
+
+  if (results[0])
+};

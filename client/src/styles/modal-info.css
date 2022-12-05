@@ -1,0 +1,182 @@
+.modal-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.message {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: bold;
+  background-color: blue;
+  color: antiquewhite;
+
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 0.3rem 0.6rem;
+}
+
+.message p {
+  margin-right: 3rem;
+  font-size: 1.3rem;
+}
+
+.close-btn {
+  border: none;
+  cursor: pointer;
+  color: antiquewhite;
+  padding: 8px;
+  font-size: 1.6rem;
+  color: white;
+  background-color: blue;
+}
+
+.close-btn:hover {
+  scale: 1.2;
+  transition: all ease-out 0.5s;
+  color: blue;
+  background-color: azure;
+}
+
+.input-container {
+  margin-top: 2rem;
+}
+
+.input-container input {
+  height: 1.6rem;
+  font-size: 1.2rem;
+}
+
+.input-container button {
+  padding: 6px 8px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/*
+==============================================
+pullUp
+==============================================
+*/
+
+.pullUp {
+  animation-name: pullUp;
+  -webkit-animation-name: pullUp;
+
+  animation-duration: 1s;
+  -webkit-animation-duration: 1s;
+
+  animation-timing-function: ease-in;
+  -webkit-animation-timing-function: ease-in;
+
+  transform-origin: 50% 0%;
+  -ms-transform-origin: 50% 0%;
+  -webkit-transform-origin: 50% 0%;
+}
+
+@keyframes pullUp {
+  0% {
+    transform: scaleY(1);
+  }
+  40% {
+    transform: scaleY(0.6);
+  }
+  60% {
+    transform: scaleY(0.4);
+  }
+  80% {
+    transform: scaleY(0.2);
+  }
+  100% {
+    transform: scaleY(0.1);
+  }
+}
+
+@-webkit-keyframes pullUp {
+  0% {
+    -webkit-transform: scaleY(1);
+  }
+  40% {
+    -webkit-transform: scaleY(0.6);
+  }
+  60% {
+    -webkit-transform: scaleY(0.4);
+  }
+  80% {
+    -webkit-transform: scaleY(0.2);
+  }
+  100% {
+    -webkit-transform: scaleY(0.1);
+  }
+}
+
+/*
+==============================================
+pullDown
+==============================================
+*/
+
+.pullDown {
+  animation-name: pullDown;
+  -webkit-animation-name: pullDown;
+
+  animation-duration: 1.1s;
+  -webkit-animation-duration: 1.1s;
+
+  animation-timing-function: ease-out;
+  -webkit-animation-timing-function: ease-out;
+
+  transform-origin: 50% 0%;
+  -ms-transform-origin: 50% 0%;
+  -webkit-transform-origin: 50% 0%;
+}
+
+@keyframes pullDown {
+  0% {
+    transform: scaleY(0.1);
+  }
+  40% {
+    transform: scaleY(1.02);
+  }
+  60% {
+    transform: scaleY(0.98);
+  }
+  80% {
+    transform: scaleY(1.01);
+  }
+  100% {
+    transform: scaleY(0.98);
+  }
+  80% {
+    transform: scaleY(1.01);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+@-webkit-keyframes pullDown {
+  0% {
+    -webkit-transform: scaleY(0.1);
+  }
+  40% {
+    -webkit-transform: scaleY(1.02);
+  }
+  60% {
+    -webkit-transform: scaleY(0.98);
+  }
+  80% {
+    -webkit-transform: scaleY(1.01);
+  }
+  100% {
+    -webkit-transform: scaleY(0.98);
+  }
+  80% {
+    -webkit-transform: scaleY(1.01);
+  }
+  100% {
+    -webkit-transform: scaleY(1);
+  }
+}
