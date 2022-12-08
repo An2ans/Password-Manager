@@ -16,6 +16,11 @@ router.put(
   credentialsController.updateCredentials
 );
 
+router.get(
+  "/credentials/:userId/:credId",
+  credentialsController.showCredentials
+);
+
 //ACTUALIZAR UPDATE CON 2 QUERY
 
 // ADD DELETE CREDENTIALS

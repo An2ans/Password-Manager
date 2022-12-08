@@ -66,5 +66,10 @@ exports.updateCredentials = async (req, res, next) => {
 exports.showCredentials = async (req, res, next) => {
   const { userId, credId } = req.params;
 
-  const success = await repository.showCredentials(userId, credId);
+  const results = await repository.showCredentials(userId, credId);
+  if (results.length > 0) {
+    res.json({ success: true, results });
+  } else {
+    res.json({ success: false });
+  }
 };

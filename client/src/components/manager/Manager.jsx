@@ -40,8 +40,17 @@ class Manager extends Component {
       <Box textAlign="center">
         {credentials.length > 1 ? (
           credentials.map((cred) => {
-            let { id, name, url } = cred;
-            return <Card key={id} id={id} name={name} url={url} />;
+            const id = cred.credentials_id;
+            const { name, url } = cred;
+            return (
+              <Card
+                userId={this.state.session.userId}
+                key={id}
+                id={id}
+                name={name}
+                url={url}
+              />
+            );
           })
         ) : (
           <h2>No credentials found</h2>

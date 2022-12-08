@@ -77,9 +77,12 @@ exports.showCredentials = async (userId, credId) => {
 
   const results = await con.query(
     "SELECT username, password FROM credentials WHERE user_id = ? AND credentials_id = ?",
-    userId,
-    credId
+    [userId, credId]
   );
 
-  if (results[0])
+  if (results[0]) {
+    return results[0];
+  } else {
+    return [];
+  }
 };

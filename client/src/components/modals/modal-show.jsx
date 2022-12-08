@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
-// import { getCredentialsById } from "../utils/utils";
 import "../../styles/modal-show.css";
 
 import Button from "@mui/material/Button";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
-const ModalShow = ({ credId, credName, url }) => {
+import axios from "axios";
+import { Card, CardActions, CardContent } from "@mui/material";
+
+const ModalShow = (props) => {
+  const { userId, credId, name, url } = props;
+
   // States
   const [display, setDisplay] = useState(false);
   const [{ username, password }, setCredentials] = useState({
@@ -15,12 +19,23 @@ const ModalShow = ({ credId, credName, url }) => {
 
   const timer = 10000;
 
-  const handleShow = (e) => {
-    setDisplay(true);
-    getCredentialsById(passId).then((response) => {
-      setCredentials(response.data[0]);
-    });
+  const showCredentials = (userId, credId) => {
+    axios
+      .get(`http://localhost:3001/credentials/${userId}/${credId}`)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.success === true) {
+          setCredentials(res.data.results[0]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
+  const handleShow = (e) => {
+    showCredentials(userId, credId);
+    setDisplay(true);
     setTimeout(() => {
       setCredentials({ username: null, password: null });
       setDisplay(false);
@@ -39,27 +54,22 @@ const ModalShow = ({ credId, credName, url }) => {
   if (display) {
     return (
       <div className="modal-wrapper" onClick={handleClose}>
-        <div className="modal">
-          <div className="modal-header">
+        <Card>
+          <CardActions>
             <span className="close-btn" onClick={handleClose}>
               &times;
             </span>
-            <h2>{passName}</h2>
+          </CardActions>
+          <CardContent>
+            <h2>{name}</h2>
             <a href="#">
-              <h3>{passUrl}</h3>
+              <h3>{url}</h3>
             </a>
-          </div>
-          <div className="modal-content">
-            <div className="user-container">
-              <h3>Username:</h3>
-              <span id="username">{username} </span>
-            </div>
-            <div className="pass-container">
-              <h3>Password:</h3>
-              <span id="password">{password} </span>
-            </div>
-          </div>
-        </div>
+            <br />
+            <h3>Username: {username} </h3>
+            <h3>Password: {password}</h3>
+          </CardContent>
+        </Card>
       </div>
     );
   } else {
@@ -76,9 +86,3 @@ const ModalShow = ({ credId, credName, url }) => {
 };
 
 export default ModalShow;
-
-{
-  /* <div className="modal-show-btn" onClick={handleShow}>
-SHOW
-</div> */
-}
