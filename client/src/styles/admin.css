@@ -1,0 +1,12 @@
+.admin-table {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 3rem 4rem;
+}
+
+.user-card,
+.credential-card {
+  display: flex;
+  flex-flow: column wrap;
+}
