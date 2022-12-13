@@ -1,8 +1,8 @@
 const repository = require("../repositories/credentials");
 
 exports.createCredentials = async (req, res, next) => {
-  const newCredentials = req.body.credentials;
-  const userId = req.body.userId;
+  const newCredentials = req.body;
+  const userId = req.params.userId;
 
   const success = await repository.createCredentials(newCredentials, userId);
 
@@ -49,7 +49,7 @@ exports.updateCredentials = async (req, res, next) => {
 
   const success = await repository.updateCredentials(
     userId,
-    credentialsId,
+    credId,
     updatedCredentials
   );
 

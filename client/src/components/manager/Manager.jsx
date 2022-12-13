@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import React, { Component, useEffect } from "react";
 import { redirect } from "react-router-dom";
 import axios from "axios";
+import ModalAdd from "../modals/modal-add";
 
 import Card from "./Card";
 
@@ -15,6 +16,7 @@ class Manager extends Component {
       credentials: [],
     };
     this.getCredentials = this.getCredentials.bind(this);
+    this.addNewCredentials = this.addNewCredentials.bind(this);
   }
 
   componentDidMount() {
@@ -29,13 +31,34 @@ class Manager extends Component {
 
   // Get the credentials when component mount
   getCredentials = (userId) => {
-    axios.get(`http://localhost:3001/credentials/${userId}`).then((res) => {
-      this.setState({ credentials: res.data });
-    });
+    axios
+      .get(`http://localhost:3001/credentials/${userId}`)
+      .then((res) => {
+        this.setState({ credentials: res.data });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // Add new credentials. It is passed to ModalAdd component where the new credentials are created.
+  addNewCredentials = (newCredentials, userId) => {
+    axios
+      .post(`http://localhost:3001/credentials/${userId}`, newCredentials)
+      .then((res) => {
+        if (res.data.success === true) {
+          console.log("Credentials added");
+          window.location.reload();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   render() {
     const credentials = this.state.credentials;
+
     return (
       <Box textAlign="center">
         {credentials.length > 1 ? (
@@ -54,6 +77,12 @@ class Manager extends Component {
           })
         ) : (
           <h2>No credentials found</h2>
+        )}
+        {this.state.session && (
+          <ModalAdd
+            userId={this.state.session.userId}
+            addNewCredentials={this.addNewCredentials}
+          />
         )}
       </Box>
     );
