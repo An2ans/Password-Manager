@@ -25,6 +25,12 @@ router.put(
   credentialsController.updateCredentials
 );
 
+// Update the credentials details
+router.delete(
+  "/credentials/:userId/:credId",
+  credentialsController.deleteCredentials
+);
+
 //ACTUALIZAR UPDATE CON 2 QUERY
 
 // ADD DELETE CREDENTIALS

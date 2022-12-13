@@ -73,3 +73,18 @@ exports.showCredentials = async (req, res, next) => {
     res.json({ success: false });
   }
 };
+
+exports.deleteCredentials = async (req, res, next) => {
+  const { userId, credId } = req.params;
+
+  const success = await repository.deleteCredentials(userId, credId);
+
+  if (success === false) {
+    res.json({
+      success: false,
+      message: "Sorry, we were unable to update the credentials",
+    });
+  } else {
+    res.json({ success: true, message: "Credentials updated" });
+  }
+};

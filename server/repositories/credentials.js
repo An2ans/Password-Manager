@@ -86,3 +86,18 @@ exports.showCredentials = async (userId, credId) => {
     return [];
   }
 };
+
+exports.deleteCredentials = async (userId, credId) => {
+  const con = await db.connect();
+
+  const success = await con.query(
+    "DELETE from credentials WHERE user_id = ? AND credentials_id = ?",
+    [userId, credId]
+  );
+
+  if (success[0].affectedRows == 0) {
+    return false;
+  } else {
+    return true;
+  }
+};

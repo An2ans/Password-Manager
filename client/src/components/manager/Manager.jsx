@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Alert } from "@mui/material";
 import React, { Component, useEffect } from "react";
 import { redirect } from "react-router-dom";
 import axios from "axios";
@@ -11,7 +11,7 @@ class Manager extends Component {
     super(props);
 
     this.state = {
-      errors: {},
+      info: null,
       session: null,
       credentials: [],
     };
@@ -47,20 +47,36 @@ class Manager extends Component {
       .post(`http://localhost:3001/credentials/${userId}`, newCredentials)
       .then((res) => {
         if (res.data.success === true) {
-          console.log("Credentials added");
-          window.location.reload();
+          // window.location.reload();
+
+          this.setState({
+            info: {
+              message: "New credentials successfully added",
+              severity: "success",
+            },
+          });
+
+          this.getCredentials(userId);
         }
       })
       .catch((error) => {
-        console.log(error);
+        this.setState({
+          info: {
+            message: `There was an error while creating the new credentials: ${error}`,
+            severity: "error",
+          },
+        });
       });
   };
 
   render() {
     const credentials = this.state.credentials;
+    const info = this.state.info;
 
     return (
       <Box textAlign="center">
+        {info && <Alert severity={info.severity}>{info.message}</Alert>}
+
         {credentials.length > 1 ? (
           credentials.map((cred) => {
             const id = cred.credentials_id;
