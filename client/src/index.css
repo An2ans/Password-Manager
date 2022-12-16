@@ -10,3 +10,8 @@ body,
   background-color: #4c91ad;
   font-family: "Roboto", Arial, Helvetica, sans-serif;
 }
+
+a {
+  text-decoration: none;
+  color: black;
+}

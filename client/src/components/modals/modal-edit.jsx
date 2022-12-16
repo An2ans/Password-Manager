@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+
 import "../../styles/modal-edit.css";
 
 import EditIcon from "@mui/icons-material/Edit";
@@ -13,14 +14,14 @@ const ModalEdit = (props) => {
     url: props.url,
   });
 
-  useEffect(() => {
-    getCredentialsById(id).then((response) => {
-      let { username, password } = response.data[0];
-      setCredentials((others) => {
-        return { ...others, username, password };
-      });
-    });
-  }, [display]);
+  // useEffect(() => {
+  //   getCredentialsById(id).then((response) => {
+  //     let { username, password } = response.data[0];
+  //     setCredentials((others) => {
+  //       return { ...others, username, password };
+  //     });
+  //   });
+  // }, [display]);
 
   const handleChange = (e) => {
     let name = e.target.name;

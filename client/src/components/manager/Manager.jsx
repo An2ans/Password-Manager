@@ -4,7 +4,9 @@ import { redirect } from "react-router-dom";
 import axios from "axios";
 import ModalAdd from "../modals/modal-add";
 
-import Card from "./Card";
+import Credentials from "./Credentials";
+
+import "../../styles/manager.css";
 
 class Manager extends Component {
   constructor(props) {
@@ -74,7 +76,7 @@ class Manager extends Component {
     const info = this.state.info;
 
     return (
-      <Box textAlign="center">
+      <div className="manager-page">
         {info && <Alert severity={info.severity}>{info.message}</Alert>}
 
         {credentials.length > 1 ? (
@@ -82,7 +84,7 @@ class Manager extends Component {
             const id = cred.credentials_id;
             const { name, url } = cred;
             return (
-              <Card
+              <Credentials
                 userId={this.state.session.userId}
                 key={id}
                 id={id}
@@ -100,7 +102,7 @@ class Manager extends Component {
             addNewCredentials={this.addNewCredentials}
           />
         )}
-      </Box>
+      </div>
     );
   }
 }
