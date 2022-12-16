@@ -1,8 +1,8 @@
 const repository = require("../repositories/credentials");
 
 exports.createCredentials = async (req, res, next) => {
-  const newCredentials = req.body.credentials;
-  const userId = req.body.userId;
+  const newCredentials = req.body;
+  const userId = req.params.userId;
 
   const success = await repository.createCredentials(newCredentials, userId);
 
@@ -49,7 +49,7 @@ exports.updateCredentials = async (req, res, next) => {
 
   const success = await repository.updateCredentials(
     userId,
-    credentialsId,
+    credId,
     updatedCredentials
   );
 
@@ -71,5 +71,20 @@ exports.showCredentials = async (req, res, next) => {
     res.json({ success: true, results });
   } else {
     res.json({ success: false });
+  }
+};
+
+exports.deleteCredentials = async (req, res, next) => {
+  const { userId, credId } = req.params;
+
+  const success = await repository.deleteCredentials(userId, credId);
+
+  if (success === false) {
+    res.json({
+      success: false,
+      message: "Sorry, we were unable to update the credentials",
+    });
+  } else {
+    res.json({ success: true, message: "Credentials updated" });
   }
 };

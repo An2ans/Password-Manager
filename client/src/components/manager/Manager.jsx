@@ -1,20 +1,24 @@
-import { Box } from "@mui/material";
+import { Box, Alert } from "@mui/material";
 import React, { Component, useEffect } from "react";
 import { redirect } from "react-router-dom";
 import axios from "axios";
+import ModalAdd from "../modals/modal-add";
 
-import Card from "./Card";
+import Credentials from "./Credentials";
+
+import "../../styles/manager.css";
 
 class Manager extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      errors: {},
+      info: null,
       session: null,
       credentials: [],
     };
     this.getCredentials = this.getCredentials.bind(this);
+    this.addNewCredentials = this.addNewCredentials.bind(this);
   }
 
   componentDidMount() {
@@ -29,21 +33,58 @@ class Manager extends Component {
 
   // Get the credentials when component mount
   getCredentials = (userId) => {
-    axios.get(`http://localhost:3001/credentials/${userId}`).then((res) => {
-      this.setState({ credentials: res.data });
-    });
+    axios
+      .get(`http://localhost:3001/credentials/${userId}`)
+      .then((res) => {
+        this.setState({ credentials: res.data });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // Add new credentials. It is passed to ModalAdd component where the new credentials are created.
+  addNewCredentials = (newCredentials, userId) => {
+    axios
+      .post(`http://localhost:3001/credentials/${userId}`, newCredentials)
+      .then((res) => {
+        if (res.data.success === true) {
+          // window.location.reload();
+
+          this.setState({
+            info: {
+              message: "New credentials successfully added",
+              severity: "success",
+            },
+          });
+
+          this.getCredentials(userId);
+        }
+      })
+      .catch((error) => {
+        this.setState({
+          info: {
+            message: `There was an error while creating the new credentials: ${error}`,
+            severity: "error",
+          },
+        });
+      });
   };
 
   render() {
     const credentials = this.state.credentials;
+    const info = this.state.info;
+
     return (
-      <Box textAlign="center">
+      <div className="manager-page">
+        {info && <Alert severity={info.severity}>{info.message}</Alert>}
+
         {credentials.length > 1 ? (
           credentials.map((cred) => {
             const id = cred.credentials_id;
             const { name, url } = cred;
             return (
-              <Card
+              <Credentials
                 userId={this.state.session.userId}
                 key={id}
                 id={id}
@@ -55,7 +96,13 @@ class Manager extends Component {
         ) : (
           <h2>No credentials found</h2>
         )}
-      </Box>
+        {this.state.session && (
+          <ModalAdd
+            userId={this.state.session.userId}
+            addNewCredentials={this.addNewCredentials}
+          />
+        )}
+      </div>
     );
   }
 }

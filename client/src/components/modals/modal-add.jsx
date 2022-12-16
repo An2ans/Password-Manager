@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-// import { addNewCredentials } from "../utils/utils";
 import "../../styles/modal-add.css";
 
 import AddIcon from "@mui/icons-material/AddOutlined";
 import Button from "@mui/material/Button";
 
-const ModalAdd = (props) => {
+import axios from "axios";
+
+const ModalAdd = ({ userId, addNewCredentials }) => {
   const [display, setDisplay] = useState(false);
 
   const [newCredentials, setNewCredentials] = useState({
@@ -15,7 +16,7 @@ const ModalAdd = (props) => {
     password: "",
   });
 
-  const handleChange = (e, rest) => {
+  const handleChange = (e) => {
     let name = e.target.name;
     let value = e.target.value;
     setNewCredentials((others) => {
@@ -24,7 +25,8 @@ const ModalAdd = (props) => {
   };
 
   const handleSubmit = () => {
-    addNewCredentials(newCredentials);
+    addNewCredentials(newCredentials, userId);
+
     setDisplay(false);
     setNewCredentials({
       name: "",
