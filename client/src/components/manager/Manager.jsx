@@ -4,6 +4,8 @@ import { redirect } from "react-router-dom";
 import axios from "axios";
 import ModalAdd from "../modals/modal-add";
 
+import SearchBar from "../other/SearchBar";
+
 import Credentials from "./Credentials";
 
 import "../../styles/manager.css";
@@ -16,9 +18,11 @@ class Manager extends Component {
       info: null,
       session: null,
       credentials: [],
+      searchInput: "",
     };
     this.getCredentials = this.getCredentials.bind(this);
     this.addNewCredentials = this.addNewCredentials.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
   componentDidMount() {
@@ -71,77 +75,61 @@ class Manager extends Component {
       });
   };
 
+  handleSearch = (e) => {
+    const search = this.state.searchInput;
+
+    e.preventDefault();
+
+    this.setState({ searchInput: e.target.value });
+
+    console.log(this.state.searchInput);
+
+    if (search.length > 0) {
+      const searchResults = this.state.credentials.filter((cred) => {
+        return cred.name.match(search);
+      });
+      this.setState({ credentials: searchResults });
+    } else {
+      this.getCredentials(this.state.session.userId);
+    }
+  };
+
   render() {
-    const credentials = this.state.credentials;
-    const info = this.state.info;
+    const { credentials, info, session, search } = this.state;
 
-    return (
-      <div className="manager-page">
-        {info && <Alert severity={info.severity}>{info.message}</Alert>}
+    if (session) {
+      return (
+        <div className="manager-page">
+          {/* info to be replaced by modalinfo */}
+          {info && <Alert severity={info.severity}>{info.message}</Alert>}
+          {/* Search bar to filter credentials */}
+          <SearchBar handleSearch={this.handleSearch} />
 
-        {credentials.length > 1 ? (
-          credentials.map((cred) => {
-            const id = cred.credentials_id;
-            const { name, url } = cred;
-            return (
-              <Credentials
-                userId={this.state.session.userId}
-                key={id}
-                id={id}
-                name={name}
-                url={url}
-              />
-            );
-          })
-        ) : (
-          <h2>No credentials found</h2>
-        )}
-        {this.state.session && (
+          {credentials.length > 0 ? (
+            credentials.map((cred) => {
+              const id = cred.credentials_id;
+              const { name, url } = cred;
+              return (
+                <Credentials
+                  userId={this.state.session.userId}
+                  key={id}
+                  id={id}
+                  name={name}
+                  url={url}
+                />
+              );
+            })
+          ) : (
+            <h2>No found credentials </h2>
+          )}
           <ModalAdd
             userId={this.state.session.userId}
             addNewCredentials={this.addNewCredentials}
           />
-        )}
-      </div>
-    );
+        </div>
+      );
+    }
   }
 }
 
 export default Manager;
-
-// const ManagerPage = () => {
-
-//   useEffect(() => {
-//     getCredentials(1).then((response) => {
-//       setCredentials(response.data);
-//     });
-//   }, [credentials]);
-
-//   return (
-//     <div className="manager-container">
-//       <ModalInfo message={message || ""} />
-//       <table className="table">
-//         <thead>
-//           <tr>
-//             <th className="name">Password Name</th>
-//             <th className="credentials">Show credentials</th>
-//             <th className="edit">Edit Password</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {credentials.map((pass) => {
-//             return (
-//               <PasswordCard
-//                 key={pass.id}
-//                 passId={pass.id}
-//                 passName={pass.name}
-//                 passUrl={pass.url}
-//               />
-//             );
-//           })}
-//         </tbody>
-//       </table>
-//       <ModalAdd />
-//     </div>
-//   );
-// };
