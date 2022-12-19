@@ -77,14 +77,6 @@ class Manager extends Component {
   };
 
   handleSearch = (search) => {
-    // const search = this.state.searchInput;
-
-    // e.preventDefault();
-
-    // this.setState({ searchInput: e.target.value });
-
-    console.log({ search });
-
     if (!search) {
       this.setState({ search: [] });
     }
@@ -116,14 +108,6 @@ class Manager extends Component {
     }
   };
 
-  handleChange = (e) => {
-    e.preventDefault();
-    const value = e.target.value.toLowerCase();
-    this.setState({ searchInput: value }, () => {
-      this.handleSearch(this.state.searchInput);
-    });
-  };
-
   render() {
     const { credentials, info, session, search } = this.state;
 
@@ -144,24 +128,6 @@ class Manager extends Component {
           {search.length > 0
             ? this.listCredentials(search)
             : this.listCredentials(credentials)}
-
-          {/* {credentials.length > 0 ? (
-            credentials.map((cred) => {
-              const id = cred.credentials_id;
-              const { name, url } = cred;
-              return (
-                <Credentials
-                  userId={this.state.session.userId}
-                  key={id}
-                  id={id}
-                  name={name}
-                  url={url}
-                />
-              );
-            })
-          ) : (
-            <h2>No found credentials </h2>
-          )} */}
         </div>
       );
     }
