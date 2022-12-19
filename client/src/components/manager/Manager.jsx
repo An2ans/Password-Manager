@@ -1,4 +1,4 @@
-import { Box, Alert } from "@mui/material";
+import { Box, Alert, TextField } from "@mui/material";
 import React, { Component, useEffect } from "react";
 import { redirect } from "react-router-dom";
 import axios from "axios";
@@ -18,11 +18,12 @@ class Manager extends Component {
       info: null,
       session: null,
       credentials: [],
-      searchInput: "",
+      search: [],
     };
     this.getCredentials = this.getCredentials.bind(this);
     this.addNewCredentials = this.addNewCredentials.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
+    this.listCredentials = this.listCredentials.bind(this);
   }
 
   componentDidMount() {
@@ -75,23 +76,52 @@ class Manager extends Component {
       });
   };
 
-  handleSearch = (e) => {
-    const search = this.state.searchInput;
+  handleSearch = (search) => {
+    // const search = this.state.searchInput;
 
-    e.preventDefault();
+    // e.preventDefault();
 
-    this.setState({ searchInput: e.target.value });
+    // this.setState({ searchInput: e.target.value });
 
-    console.log(this.state.searchInput);
+    console.log({ search });
 
+    if (!search) {
+      this.setState({ search: [] });
+    }
     if (search.length > 0) {
       const searchResults = this.state.credentials.filter((cred) => {
-        return cred.name.match(search);
+        return cred.name.toLowerCase().includes(search);
       });
-      this.setState({ credentials: searchResults });
-    } else {
-      this.getCredentials(this.state.session.userId);
+      this.setState({ search: searchResults });
     }
+  };
+
+  listCredentials = (list) => {
+    if (list.length > 0) {
+      return list.map((cred) => {
+        const id = cred.credentials_id;
+        const { name, url } = cred;
+        return (
+          <Credentials
+            userId={this.state.session.userId}
+            key={id}
+            id={id}
+            name={name}
+            url={url}
+          />
+        );
+      });
+    } else {
+      return <h2 className="no-found">No found credentials </h2>;
+    }
+  };
+
+  handleChange = (e) => {
+    e.preventDefault();
+    const value = e.target.value.toLowerCase();
+    this.setState({ searchInput: value }, () => {
+      this.handleSearch(this.state.searchInput);
+    });
   };
 
   render() {
@@ -102,10 +132,20 @@ class Manager extends Component {
         <div className="manager-page">
           {/* info to be replaced by modalinfo */}
           {info && <Alert severity={info.severity}>{info.message}</Alert>}
+
           {/* Search bar to filter credentials */}
           <SearchBar handleSearch={this.handleSearch} />
 
-          {credentials.length > 0 ? (
+          <ModalAdd
+            userId={this.state.session.userId}
+            addNewCredentials={this.addNewCredentials}
+          />
+
+          {search.length > 0
+            ? this.listCredentials(search)
+            : this.listCredentials(credentials)}
+
+          {/* {credentials.length > 0 ? (
             credentials.map((cred) => {
               const id = cred.credentials_id;
               const { name, url } = cred;
@@ -121,11 +161,7 @@ class Manager extends Component {
             })
           ) : (
             <h2>No found credentials </h2>
-          )}
-          <ModalAdd
-            userId={this.state.session.userId}
-            addNewCredentials={this.addNewCredentials}
-          />
+          )} */}
         </div>
       );
     }

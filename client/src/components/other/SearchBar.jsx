@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { styled, alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import InputBase from "@mui/material/InputBase";
@@ -47,6 +47,22 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const SearchBar = ({ handleSearch }) => {
+  const [search, setSearch] = useState("");
+
+  const handleChange = (e) => {
+    e.preventDefault();
+    const value = e.target.value.toLowerCase();
+    setSearch(value);
+  };
+
+  useEffect(() => {
+    if (search.length > 0) {
+      handleSearch(search);
+    } else {
+      handleSearch(false);
+    }
+  }, [search]);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Search>
@@ -56,7 +72,8 @@ const SearchBar = ({ handleSearch }) => {
         <StyledInputBase
           placeholder="Search…"
           inputProps={{ "aria-label": "search" }}
-          onChange={handleSearch}
+          onChange={handleChange}
+          value={search}
         />
       </Search>
     </Box>
