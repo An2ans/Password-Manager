@@ -2,6 +2,7 @@ import React from "react";
 
 import ModalShow from "../modals/modal-show";
 import ModalEdit from "../modals/modal-edit";
+import ModalDelete from "../modals/modal-delete";
 
 const Credentials = ({ userId, id, name, url }) => {
   return (
@@ -14,7 +15,8 @@ const Credentials = ({ userId, id, name, url }) => {
       </div>
       <div className="buttons">
         <ModalShow userId={userId} credId={id} name={name} url={url} />
-        <ModalEdit />
+        <ModalEdit userId={userId} credId={id} name={name} url={url} />
+        <ModalDelete userId={userId} credId={id} name={name} url={url} />
       </div>
     </div>
   );

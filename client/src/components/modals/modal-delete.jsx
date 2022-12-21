@@ -7,38 +7,25 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import axios from "axios";
 import { Card, CardActions, CardContent } from "@mui/material";
 
-const ModalShow = (props) => {
+const ModalDelete = (props) => {
   const { userId, credId, name, url } = props;
 
   // States
   const [display, setDisplay] = useState(false);
-  const [{ username, password }, setCredentials] = useState({
-    username: null,
-    password: null,
-  });
 
-  const timer = 10000;
-
-  const showCredentials = (userId, credId) => {
+  const handleDelete = () => {
     axios
-      .get(`http://localhost:3001/credentials/${userId}/${credId}`)
+      .delete(`http://localhost:3001/credentials/${userId}/${credId}`)
       .then((res) => {
         if (res.data.success === true) {
-          setCredentials(res.data.results[0]);
+          console.log("Credentials deleted");
+          setDisplay(false);
+          window.location.reload();
         }
       })
       .catch((error) => {
         console.log(error);
       });
-  };
-
-  const handleShow = (e) => {
-    showCredentials(userId, credId);
-    setDisplay(true);
-    setTimeout(() => {
-      setCredentials({ username: null, password: null });
-      setDisplay(false);
-    }, timer);
   };
 
   const handleClose = (e) => {
@@ -60,14 +47,16 @@ const ModalShow = (props) => {
             </span>
           </CardActions>
           <CardContent>
-            <h2>{name}</h2>
-            <a href="#">
-              <h3>{url}</h3>
-            </a>
-            <br />
-            <h3>Username: {username} </h3>
-            <h3>Password: {password}</h3>
+            <p className="delete-message">
+              We cannot recover your credentials once deleted. Are you sure you
+              wish to delete this credential? Name: {name}, Web: {url}
+            </p>
           </CardContent>
+          <CardActions>
+            <Button variant="contained" onClick={handleDelete}>
+              Delete
+            </Button>
+          </CardActions>
         </Card>
       </div>
     );
@@ -76,12 +65,14 @@ const ModalShow = (props) => {
       <Button
         variant="contained"
         startIcon={<VisibilityIcon />}
-        onClick={handleShow}
+        onClick={() => {
+          setDisplay(true);
+        }}
       >
-        Show
+        Delete
       </Button>
     );
   }
 };
 
-export default ModalShow;
+export default ModalDelete;
