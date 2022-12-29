@@ -1,15 +1,11 @@
 .manager-page {
-  width: 68%;
-  margin: 6rem auto;
-
-  display: flex;
-  flex-direction: column;
+  width: 90%;
+  margin: 0 auto;
 }
 
 .card-container {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
   justify-content: space-between;
 
   padding: 1.5rem;
@@ -20,11 +16,45 @@
   box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.4);
 }
 
+.top {
+  display: flex;
+  justify-content: space-between;
+  margin: 2rem auto;
+}
+
 .credentials {
   text-align: center;
+  max-width: 50%;
 }
 
 .buttons {
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media only screen and (min-width: 600px) {
+  .manager-page {
+    width: 70%;
+  }
+}
+@media only screen and (min-width: 768px) {
+  .manager-page {
+    width: 60%;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  .manager-page {
+    width: 40%;
+  }
+
+  .credentials {
+    font-size: 1.2rem;
+  }
+  .buttons {
+    flex-direction: row;
+    gap: 24px;
+    align-self: center;
+  }
 }

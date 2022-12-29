@@ -4,8 +4,6 @@ import "../../styles/modal-add.css";
 import AddIcon from "@mui/icons-material/AddOutlined";
 import Button from "@mui/material/Button";
 
-import axios from "axios";
-
 const ModalAdd = ({ userId, addNewCredentials }) => {
   const [display, setDisplay] = useState(false);
 
@@ -78,7 +76,11 @@ const ModalAdd = ({ userId, addNewCredentials }) => {
       <Button
         onClick={() => setDisplay(true)}
         variant="contained"
+        color="success"
         startIcon={<AddIcon />}
+        sx={{
+          borderRadius: "120px",
+        }}
       >
         Add
       </Button>

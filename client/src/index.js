@@ -16,11 +16,6 @@ import Manager from "./components/manager/Manager";
 import Welcome from "./components/welcome/Welcome";
 import AdminTable from "./components/admin/admin";
 
-// Material ui for front-end
-// ADD User funtionallity with restriction
-// delete credentials by id
-// usersdb
-
 class App extends Component {
   constructor(props) {
     super(props);

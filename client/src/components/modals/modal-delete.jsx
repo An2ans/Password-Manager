@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../../styles/modal-show.css";
 
 import Button from "@mui/material/Button";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import axios from "axios";
 import { Card, CardActions, CardContent } from "@mui/material";
 
@@ -64,7 +63,8 @@ const ModalDelete = (props) => {
     return (
       <Button
         variant="contained"
-        startIcon={<VisibilityIcon />}
+        color="error"
+        startIcon={<DeleteForeverIcon />}
         onClick={() => {
           setDisplay(true);
         }}

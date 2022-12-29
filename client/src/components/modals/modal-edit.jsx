@@ -80,6 +80,7 @@ const ModalEdit = (props) => {
           setDisplay(true);
         }}
         variant="contained"
+        color="secondary"
         startIcon={<EditIcon />}
       >
         Edit

@@ -117,13 +117,16 @@ class Manager extends Component {
           {/* info to be replaced by modalinfo */}
           {info && <Alert severity={info.severity}>{info.message}</Alert>}
 
-          {/* Search bar to filter credentials */}
-          <SearchBar handleSearch={this.handleSearch} />
+          <div className="top">
+            {/* Search bar to filter credentials */}
 
-          <ModalAdd
-            userId={this.state.session.userId}
-            addNewCredentials={this.addNewCredentials}
-          />
+            <ModalAdd
+              userId={this.state.session.userId}
+              addNewCredentials={this.addNewCredentials}
+            />
+
+            <SearchBar handleSearch={this.handleSearch} />
+          </div>
 
           {search.length > 0
             ? this.listCredentials(search)
