@@ -1,5 +1,5 @@
-import { Box, Alert, TextField } from "@mui/material";
-import React, { Component, useEffect } from "react";
+import { Alert } from "@mui/material";
+import React, { Component } from "react";
 import { redirect } from "react-router-dom";
 import axios from "axios";
 import ModalAdd from "../modals/modal-add";
@@ -118,13 +118,11 @@ class Manager extends Component {
           {info && <Alert severity={info.severity}>{info.message}</Alert>}
 
           <div className="top">
-            {/* Search bar to filter credentials */}
-
             <ModalAdd
               userId={this.state.session.userId}
               addNewCredentials={this.addNewCredentials}
             />
-
+            {/* Search bar to filter credentials */}
             <SearchBar handleSearch={this.handleSearch} />
           </div>
 

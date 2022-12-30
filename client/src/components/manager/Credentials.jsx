@@ -9,7 +9,7 @@ const Credentials = ({ userId, id, name, url }) => {
     <div className="card-container">
       <div className="credentials">
         <h2 className="name">{name}</h2>
-        <a href={url}>
+        <a href={`https://${url}`} target="_blank">
           <p className="url">{url}</p>
         </a>
       </div>
