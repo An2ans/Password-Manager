@@ -108,7 +108,10 @@ const ModalAdd = ({ userId, addNewCredentials }) => {
         color="success"
         startIcon={<AddIcon />}
         sx={{
-          borderRadius: "120px",
+          fontSize: "1.2rem",
+          height: "fit-content",
+          alignSelf: "flex-end",
+          marginLeft: "2rem",
         }}
       >
         Add

@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/modal-show.css";
 
-import Button from "@mui/material/Button";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-
+import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
-import { Card, CardActions, CardContent } from "@mui/material";
+import {
+  Card,
+  CardActions,
+  CardContent,
+  IconButton,
+  Button,
+} from "@mui/material";
+
+import { Link } from "react-router-dom";
 
 const ModalShow = (props) => {
   const { userId, credId, name, url } = props;
@@ -53,17 +60,23 @@ const ModalShow = (props) => {
   if (display) {
     return (
       <div className="modal-wrapper" onClick={handleClose}>
-        <Card>
+        <Card className="modal">
           <CardActions>
-            <span className="close-btn" onClick={handleClose}>
-              &times;
-            </span>
+            <IconButton
+              onClick={() => {
+                setDisplay(false);
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
           </CardActions>
           <CardContent>
             <h2>{name}</h2>
-            <a href="#">
+
+            <a href={`https://${url}`} target="_blank">
               <h3>{url}</h3>
             </a>
+
             <br />
             <h3>Username: {username} </h3>
             <h3>Password: {password}</h3>

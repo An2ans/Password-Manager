@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from "react";
-import "../../styles/modal-show.css";
+import React, { useState } from "react";
+import "../../styles/modal-delete.css";
 
-import Button from "@mui/material/Button";
+import CloseIcon from "@mui/icons-material/Close";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import axios from "axios";
-import { Card, CardActions, CardContent } from "@mui/material";
+import {
+  Card,
+  CardActions,
+  CardContent,
+  IconButton,
+  Button,
+} from "@mui/material";
 
 const ModalDelete = (props) => {
   const { userId, credId, name, url } = props;
@@ -39,20 +45,32 @@ const ModalDelete = (props) => {
   if (display) {
     return (
       <div className="modal-wrapper" onClick={handleClose}>
-        <Card>
+        <Card className="modal">
           <CardActions>
-            <span className="close-btn" onClick={handleClose}>
-              &times;
-            </span>
+            <IconButton
+              onClick={() => {
+                setDisplay(false);
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
           </CardActions>
           <CardContent>
             <p className="delete-message">
               We cannot recover your credentials once deleted. Are you sure you
-              wish to delete this credential? Name: {name}, Web: {url}
+              wish to delete this credential?
+              <br />
+              <br /> Name: {name}
+              <br /> Web: {url}
             </p>
           </CardContent>
           <CardActions>
-            <Button variant="contained" onClick={handleDelete}>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleDelete}
+              sx={{ width: "100%" }}
+            >
               Delete
             </Button>
           </CardActions>

@@ -1,0 +1,40 @@
+.modal-wrapper {
+  position: absolute;
+  left: 0%;
+  top: 60px;
+  width: 100%;
+  height: 90%;
+  background-color: rgba(136, 136, 136, 1);
+  z-index: 2;
+}
+
+.modal {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ebebeb;
+  margin: auto;
+  text-align: center;
+  border: 1px solid #888;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+@media only screen and (min-width: 768px) {
+  .modal {
+    width: 80%;
+  }
+  .delete-message {
+    margin: 2rem;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .modal {
+    width: 60%;
+  }
+  .delete-message {
+    font-size: 1.2rem;
+  }
+}
