@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import "../../styles/modal-show.css";
+import React, { useState } from "react";
+import "../../styles/modal-delete.css";
 
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import CloseIcon from "@mui/icons-material/Close";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import axios from "axios";
 import {
   Card,
@@ -12,38 +12,25 @@ import {
   Button,
 } from "@mui/material";
 
-const ModalShow = (props) => {
+const ModalDelete = (props) => {
   const { userId, credId, name, url } = props;
 
   // States
   const [display, setDisplay] = useState(false);
-  const [{ username, password }, setCredentials] = useState({
-    username: null,
-    password: null,
-  });
 
-  const timer = 10000;
-
-  const showCredentials = (userId, credId) => {
+  const handleDelete = () => {
     axios
-      .get(`http://localhost:3001/credentials/${userId}/${credId}`)
+      .delete(`http://localhost:3001/credentials/${userId}/${credId}`)
       .then((res) => {
         if (res.data.success === true) {
-          setCredentials(res.data.results[0]);
+          console.log("Credentials deleted");
+          setDisplay(false);
+          window.location.reload();
         }
       })
       .catch((error) => {
         console.log(error);
       });
-  };
-
-  const handleShow = (e) => {
-    showCredentials(userId, credId);
-    setDisplay(true);
-    setTimeout(() => {
-      setCredentials({ username: null, password: null });
-      setDisplay(false);
-    }, timer);
   };
 
   const handleClose = (e) => {
@@ -69,16 +56,24 @@ const ModalShow = (props) => {
             </IconButton>
           </CardActions>
           <CardContent>
-            <h2>{name}</h2>
-
-            <a href={`https://${url}`} target="_blank">
-              <h3>{url}</h3>
-            </a>
-
-            <br />
-            <h3>Username: {username} </h3>
-            <h3>Password: {password}</h3>
+            <p className="delete-message">
+              We cannot recover your credentials once deleted. Are you sure you
+              wish to delete this credential?
+              <br />
+              <br /> Name: {name}
+              <br /> Web: {url}
+            </p>
           </CardContent>
+          <CardActions>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleDelete}
+              sx={{ width: "100%" }}
+            >
+              Delete
+            </Button>
+          </CardActions>
         </Card>
       </div>
     );
@@ -86,13 +81,16 @@ const ModalShow = (props) => {
     return (
       <Button
         variant="contained"
-        startIcon={<VisibilityIcon />}
-        onClick={handleShow}
+        color="error"
+        startIcon={<DeleteForeverIcon />}
+        onClick={() => {
+          setDisplay(true);
+        }}
       >
-        Show
+        Delete
       </Button>
     );
   }
 };
 
-export default ModalShow;
+export default ModalDelete;

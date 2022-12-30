@@ -19,7 +19,7 @@ const LogInForm = ({
       <h1>Log In</h1>
       {errors.message && <p style={{ color: "red" }}>{errors.message}</p>}
 
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} className="form">
         <TextField
           error={errors.username && true}
           name="username"

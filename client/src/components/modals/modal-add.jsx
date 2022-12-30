@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import "../../styles/modal-add.css";
-
+import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/AddOutlined";
-import Button from "@mui/material/Button";
-
-import axios from "axios";
+import { Button, TextField, IconButton } from "@mui/material/";
 
 const ModalAdd = ({ userId, addNewCredentials }) => {
   const [display, setDisplay] = useState(false);
@@ -38,39 +36,68 @@ const ModalAdd = ({ userId, addNewCredentials }) => {
 
   if (display) {
     return (
-      <div className="modal">
-        <span className="close-btn" onClick={() => setDisplay(false)}>
-          &times;
-        </span>
-        <div className="form">
-          <input
-            type="text"
+      <div className="modal-add">
+        <IconButton
+          onClick={() => {
+            setDisplay(false);
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <h2>Add your new credentials: </h2>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            // error={errors.username && true}
+            className="input"
             name="name"
-            placeholder="Name your new credentials"
+            label="Name your new credentials"
+            value={newCredentials.name}
             onChange={handleChange}
+            // helperText={errors.username}
           />
-          <input
-            type="text"
+
+          <TextField
+            // error={errors.username && true}
+            className="input"
             name="url"
-            placeholder="url"
+            label="The website URL"
+            value={newCredentials.url}
             onChange={handleChange}
+            // helperText={errors.username}
           />
-          <input
-            type="text"
+
+          <TextField
+            // error={errors.username && true}
+            className="input"
             name="username"
-            placeholder="Username"
+            label="Your username"
+            value={newCredentials.username}
             onChange={handleChange}
+            // helperText={errors.username}
           />
-          <input
-            type="text"
+
+          <TextField
+            // error={errors.username && true}
+            className="input"
             name="password"
-            placeholder="Your Password"
+            label="Your password"
+            value={newCredentials.password}
             onChange={handleChange}
+            // helperText={errors.username}
           />
-          <button className="submit" onClick={handleSubmit}>
+
+          <Button
+            className="submit input"
+            variant="contained"
+            color="success"
+            type="submit"
+            label="Add"
+            sx={{ margin: "2rem auto", fontSize: "1.5rem" }}
+          >
             Add
-          </button>
-        </div>
+          </Button>
+        </form>
       </div>
     );
   } else {
@@ -78,7 +105,14 @@ const ModalAdd = ({ userId, addNewCredentials }) => {
       <Button
         onClick={() => setDisplay(true)}
         variant="contained"
+        color="success"
         startIcon={<AddIcon />}
+        sx={{
+          fontSize: "1.2rem",
+          height: "fit-content",
+          alignSelf: "flex-end",
+          marginLeft: "2rem",
+        }}
       >
         Add
       </Button>

@@ -10,21 +10,15 @@
 
 .modal {
   position: absolute;
-  top: 100px;
-  min-width: 100%;
+  width: 100%;
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 3;
-}
-
-.modal-show-btn {
-  cursor: pointer;
-  /* padding: 20px 30px; */
-  background-color: #fefefe;
-}
-
-.modal-show-btn:hover {
-  background-color: #888;
-  transition: all ease-in 2s;
+  background-color: #ebebeb;
+  margin: auto;
+  text-align: center;
+  border: 1px solid #888;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 /* Modal Header */
@@ -32,12 +26,6 @@
   padding: 2px 16px;
   background-color: #1081dd;
   color: white;
-}
-
-.close-btn {
-  font-size: 1rem;
-  cursor: pointer;
-  float: right;
 }
 
 /* Modal Content */
@@ -68,30 +56,18 @@
 
 @media only screen and (min-width: 768px) {
   .modal {
-    max-width: 60%;
-  }
-
-  .pass-container,
-  .user-container {
-    flex-direction: row;
-
-    padding: 1.5 2rem 1.5 2rem;
+    width: 80%;
   }
 }
 
 @media only screen and (min-width: 1024px) {
   .modal {
-    min-width: fit-content;
-    max-width: 40%;
-  }
-
-  .modal-content span {
-    font-size: 2rem;
+    width: 60%;
   }
 }
 
 /* Add Animation */
-@keyframes animatetop {
+/* @keyframes animatetop {
   from {
     top: -300px;
     opacity: 0;
@@ -100,7 +76,7 @@
     top: 0;
     opacity: 1;
   }
-}
+} */
 
 /* animation-name: animatetop;
 animation-duration: 0.4s; */

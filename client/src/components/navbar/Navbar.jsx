@@ -8,7 +8,7 @@ const Navbar = (props) => {
   const logOut = props.logOut;
 
   return (
-    <nav className="navbar navbar-light">
+    <nav className="navbar ">
       <div className="icon"></div>
       <ul className="options">
         <Link to="/">Manager </Link>

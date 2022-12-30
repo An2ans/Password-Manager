@@ -31,8 +31,4 @@ router.delete(
   credentialsController.deleteCredentials
 );
 
-//ACTUALIZAR UPDATE CON 2 QUERY
-
-// ADD DELETE CREDENTIALS
-
 module.exports = router;

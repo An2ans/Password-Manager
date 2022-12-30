@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { styled, alpha } from "@mui/material/styles";
-import Box from "@mui/material/Box";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 
@@ -12,10 +11,11 @@ const Search = styled("div")(({ theme }) => ({
     backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
   marginLeft: 0,
-  width: "100%",
+  marginTop: "3rem",
+  width: "60%",
   [theme.breakpoints.up("sm")]: {
     marginLeft: theme.spacing(1),
-    width: "auto",
+    width: "60%",
   },
 }));
 
@@ -38,9 +38,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     transition: theme.transitions.create("width"),
     width: "100%",
     [theme.breakpoints.up("sm")]: {
-      width: "12ch",
+      width: "100%",
       "&:focus": {
-        width: "20ch",
+        width: "100%",
       },
     },
   },
@@ -64,19 +64,17 @@ const SearchBar = ({ handleSearch }) => {
   }, [search]);
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <Search>
-        <SearchIconWrapper>
-          <SearchIcon />
-        </SearchIconWrapper>
-        <StyledInputBase
-          placeholder="Search…"
-          inputProps={{ "aria-label": "search" }}
-          onChange={handleChange}
-          value={search}
-        />
-      </Search>
-    </Box>
+    <Search>
+      <SearchIconWrapper>
+        <SearchIcon />
+      </SearchIconWrapper>
+      <StyledInputBase
+        placeholder="Search…"
+        inputProps={{ "aria-label": "search" }}
+        onChange={handleChange}
+        value={search}
+      />
+    </Search>
   );
 };
 

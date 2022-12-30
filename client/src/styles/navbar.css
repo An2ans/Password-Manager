@@ -1,14 +1,14 @@
 .navbar {
   width: 100%;
   height: 60px;
-  background-color: #1081dd;
+  background-color: #fefefe;
   display: flex;
   font-size: 1.3rem;
 }
 
 .icon {
   width: 80px;
-  background-color: blueviolet;
+  background: no-repeat center/100% url(/public/android-chrome-192x192.png);
 }
 
 .options {
@@ -17,4 +17,18 @@
   list-style-type: none;
   margin: auto 4rem;
   justify-content: space-evenly;
+  color: #4c91ad;
+}
+
+@media only screen and (min-width: 600px) {
+}
+@media only screen and (min-width: 768px) {
+  .options {
+    font-size: 1.4rem;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  .options {
+    font-size: 1.6rem;
+  }
 }
