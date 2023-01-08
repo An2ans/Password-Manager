@@ -72,9 +72,8 @@ class SignUp extends Component {
       email: user.email,
     };
 
-    console.log({ params });
     axios
-      .post("http://localhost:3001/sign-up", params)
+      .post("http://localhost:3001/user", params)
       .then((res) => {
         if (res.data.success === true) {
           console.log("PRIMER SUCCESS");

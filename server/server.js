@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 
+const db = require("./dbService");
+
 const userRoutes = require("./routes/user");
 
 const credRoutes = require("./routes/credentials");

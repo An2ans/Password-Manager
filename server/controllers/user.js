@@ -1,13 +1,17 @@
 const repository = require("../repositories/user");
 
-const createUser = (req, res, next) => {
-  // CRYPT & DECRYPT
+const createUser = async (req, res, next) => {
   const { username, email, password } = req.body;
-  const result = repository.createUser(username, email, password);
-  if (result) {
-    res.json(`User ${username} successfully created`);
-  } else {
-    res.json("Error while creating user");
+
+  try {
+    await repository.createUser(username, email, password);
+
+    res.send({
+      success: true,
+      message: `User ${username} successfully created`,
+    });
+  } catch (error) {
+    res.send({ success: false, message: error.message });
   }
 };
 
@@ -18,46 +22,56 @@ const listUsers = async (req, res, next) => {
 
 const findUserById = async (req, res, next) => {
   const id = req.params.id;
-  const user = await repository.findUserById(id);
-  res.send(user);
+
+  try {
+    const user = await repository.findUserById(id);
+    res.send({ success: true, user });
+  } catch (err) {
+    res.send({ success: false, message: err.message });
+  }
 };
 
 const updateUserById = async (req, res, next) => {
-  // CRYPT & DECRYPT
   const id = req.params.id;
   const updatedUser = req.body;
 
-  await repository.updateUserById(id, updatedUser);
-  res.json(`User ${id} successfully updated`);
+  try {
+    await repository.updateUserById(id, updatedUser);
+    res.send({ success: true, message: `User ${id} successfully updated` });
+  } catch (err) {
+    res.send({ success: false, message: err.message });
+  }
 };
 
 const deleteUserById = async (req, res, next) => {
   const id = req.params.id;
 
-  await repository.deleteUserById(id);
-  res.json(`User ${id} successfully deleted`);
+  try {
+    await repository.deleteUserById(id);
+    res.send({ success: true, message: `User ${id} successfully deleted` });
+  } catch (err) {
+    res.send({ success: false, message: err.message });
+  }
 };
 
 const authUser = async (req, res, next) => {
-  // CRYPT & DECRYPT
-
   const login = req.body;
 
-  const user = await repository.authUser(login);
-
-  if (user.length < 1 || !user) {
-    res.json({ success: false, message: "User not found, please try again" });
-  } else {
-    let session = {
-      userId: user[0].user_id,
-      username: user[0].username,
+  try {
+    const user = await repository.authUser(login);
+    const session = {
+      userId: user.user_id,
+      username: user.username,
       created: new Date(),
     };
 
-    res.json({
+    res.send({
       success: true,
-      session: session,
+      message: `Welcome back ${user.username}`,
+      session,
     });
+  } catch (err) {
+    res.send({ success: false, message: err.message });
   }
 };
 

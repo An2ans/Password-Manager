@@ -1,13 +1,16 @@
 const db = require("../dbService");
+const { encrypt, decrypt } = require("../encryption");
 
 exports.createCredentials = async (newCredentials, userId) => {
   const con = await db.connect();
 
   const { name, url, username, password } = newCredentials;
 
+  const { hash, iv } = encrypt(password);
+
   const success = await con.query(
-    "INSERT INTO credentials (name, url, username, password, iv, user_id) VALUES(?, ?, ?, ?, 'AAAA', ?);",
-    [name, url, username, password, userId],
+    "INSERT INTO credentials (name, url, username, password, iv, user_id) VALUES(?, ?, ?, ?, ?, ?);",
+    [name, url, username, hash, iv, userId],
     (err, res) => {
       if (err) {
         console.log(err);

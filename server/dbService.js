@@ -59,8 +59,9 @@ exports.createTables = async () => {
 
   const usersTable = [
     "user_id INT AUTO_INCREMENT NOT NULL",
-    "username VARCHAR(50) NOT NULL",
+    "username VARCHAR(50) NOT NULL UNIQUE",
     "password VARCHAR(250) NOT NULL",
+    "iv VARCHAR(250) NOT NULL",
     "email VARCHAR(250) NOT NULL",
     "PRIMARY KEY (user_id));",
   ];
@@ -80,7 +81,11 @@ exports.createTables = async () => {
   );
 
   await db.query(
-    "INSERT INTO users (user_id, username, password, email) VALUES (1, 'test', 'testtest', 'test@test.com');"
+    "INSERT INTO users (user_id, username, password, iv, email) VALUES (1, 'admin', 'password', 'iv', 'test@test.com');"
+  );
+
+  await db.query(
+    "INSERT INTO credentials (credentials_id, name, url, username, password, iv, user_id) VALUES (1, 'test', 'www.google.com', 'username',  'password', 'iv', 1);"
   );
 
   // db.end((err) => {
