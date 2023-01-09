@@ -3,6 +3,8 @@ import { TextField, Button } from "@mui/material/";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
+import ModalAlert from "../modals/modal-alert";
+
 import "./styles.css";
 
 const LogInForm = ({
@@ -17,7 +19,9 @@ const LogInForm = ({
   return (
     <div className="loginBox">
       <h1>Log In</h1>
-      {errors.message && <p style={{ color: "red" }}>{errors.message}</p>}
+      {errors.message && (
+        <ModalAlert category="error" message={errors.message}></ModalAlert>
+      )}
 
       <form onSubmit={onSubmit} className="form">
         <TextField

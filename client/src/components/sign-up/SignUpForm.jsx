@@ -3,7 +3,7 @@ import { TextField, Button } from "@mui/material/";
 import PasswordStr from "../other/PasswordStr";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
-
+import ModalAlert from "../modals/modal-alert";
 import "./styles.css";
 
 const SignUpForm = ({
@@ -21,7 +21,9 @@ const SignUpForm = ({
   return (
     <div className="loginBox">
       <h1>Sign Up</h1>
-      {errors.message && <p style={{ color: "red" }}>{errors.message}</p>}
+      {errors.message && (
+        <ModalAlert category="error" message={errors.message} />
+      )}
 
       <form onSubmit={onSubmit}>
         <TextField
