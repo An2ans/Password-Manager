@@ -4,87 +4,75 @@ exports.createCredentials = async (req, res, next) => {
   const newCredentials = req.body;
   const userId = req.params.userId;
 
-  const success = await repository.createCredentials(newCredentials, userId);
-
-  console.log(success);
-
-  if (success === false) {
-    res.json({
-      success: false,
-      message: "Sorry, we were unable to create the new credentials",
+  try {
+    await repository.createCredentials(newCredentials, userId);
+    res.send({
+      success: true,
+      message: `New credentials ${newCredentials.name} created`,
     });
-  } else {
-    res.json({ success: true, message: "New credentials created" });
+  } catch (err) {
+    res.send({
+      success: false,
+      message: err.message,
+    });
   }
 };
 
 exports.getAllCredentials = async (req, res, next) => {
   const results = await repository.getAllCredentials();
 
-  if (results.length > 0) {
-    res.json(results);
-  } else {
-    res.json({ success: false, message: "Couldn't retrieve any credentials" });
+  try {
+    res.send({ success: true, results });
+  } catch (err) {
+    res.send({ success: false, message: err.message });
   }
 };
 
 exports.getUserCredentials = async (req, res, next) => {
   const userId = req.params.userId;
 
-  const results = await repository.getUserCredentials(userId);
-
-  if (results.length > 0) {
-    res.json(results);
-  } else {
-    res.json({ success: false, message: "Couldn't retrieve any credentials" });
+  try {
+    const results = await repository.getUserCredentials(userId);
+    res.send({ success: true, results });
+  } catch (err) {
+    res.send({ success: false, message: err.message });
   }
 };
 
 exports.updateCredentials = async (req, res, next) => {
-  const userId = req.params.userId;
-
-  const credId = req.params.credId;
+  const { credId, userId } = req.params;
 
   const updatedCredentials = req.body;
 
-  const success = await repository.updateCredentials(
-    userId,
-    credId,
-    updatedCredentials
-  );
-
-  if (success === false) {
+  try {
+    await repository.updateCredentials(userId, credId, updatedCredentials);
+    res.send({ success: true, message: `Credentials updated ` });
+  } catch (err) {
     res.json({
       success: false,
-      message: "Sorry, we were unable to update the credentials",
+      message: err.message,
     });
-  } else {
-    res.json({ success: true, message: "Credentials updated" });
   }
 };
 
 exports.showCredentials = async (req, res, next) => {
   const { userId, credId } = req.params;
 
-  const results = await repository.showCredentials(userId, credId);
-  if (results.length > 0) {
-    res.json({ success: true, results });
-  } else {
-    res.json({ success: false });
+  try {
+    const results = await repository.showCredentials(userId, credId);
+    res.send({ success: true, results });
+  } catch (err) {
+    res.send({ success: false, message: err.message });
   }
 };
 
 exports.deleteCredentials = async (req, res, next) => {
   const { userId, credId } = req.params;
 
-  const success = await repository.deleteCredentials(userId, credId);
-
-  if (success === false) {
-    res.json({
-      success: false,
-      message: "Sorry, we were unable to update the credentials",
-    });
-  } else {
-    res.json({ success: true, message: "Credentials updated" });
+  try {
+    await repository.deleteCredentials(userId, credId);
+    res.send({ success: true, message: "Credentials deleted" });
+  } catch (err) {
+    res.send({ success: false, message: err.message });
   }
 };
