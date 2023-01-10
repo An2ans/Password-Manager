@@ -81,3 +81,59 @@ export const validateLoginForm = (payload) => {
     errors,
   };
 };
+
+export const validateCredentials = (payload) => {
+  const errors = {};
+  let message = "";
+  let isFormValid = true;
+
+  // name
+  if (
+    !payload ||
+    typeof payload.name !== "string" ||
+    payload.name.trim().length === 0
+  ) {
+    isFormValid = false;
+    errors.name = "Please provide a name to identify the credentials.";
+  }
+
+  // URL
+  if (
+    !payload ||
+    typeof payload.url !== "string" ||
+    !validator.isURL(payload.url)
+  ) {
+    isFormValid = false;
+    errors.url = "Please provide a correct url.";
+  }
+
+  // Username
+  if (
+    !payload ||
+    typeof payload.username !== "string" ||
+    payload.username.trim().length === 0
+  ) {
+    isFormValid = false;
+    errors.username = "Please provide a username .";
+  }
+
+  // Password
+  if (
+    !payload ||
+    typeof payload.password !== "string" ||
+    payload.password.trim().length < 8
+  ) {
+    isFormValid = false;
+    errors.password = "Password must have at least 8 characters.";
+  }
+
+  if (!isFormValid) {
+    message = "Check the form for errors.";
+  }
+
+  return {
+    success: isFormValid,
+    message,
+    errors,
+  };
+};

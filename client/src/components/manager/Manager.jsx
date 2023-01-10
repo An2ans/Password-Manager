@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { redirect } from "react-router-dom";
 import axios from "axios";
 import ModalAdd from "../modals/modal-add";
+import ModalAlert from "../modals/modal-alert";
 
 import SearchBar from "../other/SearchBar";
 
@@ -24,6 +25,7 @@ class Manager extends Component {
     this.addNewCredentials = this.addNewCredentials.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.listCredentials = this.listCredentials.bind(this);
+    this.deleteCredentials = this.deleteCredentials.bind(this);
   }
 
   componentDidMount() {
@@ -41,7 +43,15 @@ class Manager extends Component {
     axios
       .get(`http://localhost:3001/credentials/${userId}`)
       .then((res) => {
-        this.setState({ credentials: res.data });
+        if (res.data.success) {
+          this.setState({
+            credentials: res.data.results,
+          });
+        } else {
+          this.setState({
+            info: { category: "error", message: res.data.message },
+          });
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -58,21 +68,43 @@ class Manager extends Component {
 
           this.setState({
             info: {
-              message: "New credentials successfully added",
-              severity: "success",
+              message: res.data.message,
+              category: "success",
             },
           });
 
           this.getCredentials(userId);
+        } else {
+          this.setState({
+            info: {
+              message: res.data.message,
+              severity: "error",
+            },
+          });
         }
       })
       .catch((error) => {
-        this.setState({
-          info: {
-            message: `There was an error while creating the new credentials: ${error}`,
-            severity: "error",
-          },
-        });
+        console.log(error);
+      });
+  };
+
+  deleteCredentials = (userId, credId) => {
+    axios
+      .delete(`http://localhost:3001/credentials/${userId}/${credId}`)
+      .then((res) => {
+        if (res.data.success === true) {
+          this.setState({
+            info: { category: "success", message: res.data.message },
+          });
+          window.location.reload();
+        } else {
+          this.setState({
+            info: { category: "error", message: res.data.message },
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
       });
   };
 
@@ -100,6 +132,7 @@ class Manager extends Component {
             id={id}
             name={name}
             url={url}
+            deleteCredentials={this.deleteCredentials}
           />
         );
       });
@@ -115,7 +148,7 @@ class Manager extends Component {
       return (
         <div className="manager-page">
           {/* info to be replaced by modalinfo */}
-          {info && <Alert severity={info.severity}>{info.message}</Alert>}
+          {info && <ModalAdd category={info.category} message={info.message} />}
 
           <div className="top">
             <ModalAdd

@@ -5,11 +5,14 @@ import "../../styles/modal-edit.css";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import { Button, IconButton, TextField } from "@mui/material/";
+import { validateCredentials } from "../../utils/validators";
 
 const ModalEdit = (props) => {
   const { userId, credId, name, url } = props;
 
   const [display, setDisplay] = useState(false);
+
+  const [errors, setErrors] = useState({});
 
   const [credential, setCredentials] = useState({
     id: credId,
@@ -24,14 +27,18 @@ const ModalEdit = (props) => {
       axios
         .get(`http://localhost:3001/credentials/${userId}/${credId}`)
         .then((res) => {
-          let { username, password } = res.data.results[0];
-          setCredentials((others) => {
-            return { ...others, username, password };
-          });
+          if (res.data.success) {
+            let { username, password } = res.data.results;
+            setCredentials((others) => {
+              return { ...others, username, password };
+            });
+          }
         })
         .catch((error) => {
           console.log(error);
         });
+    } else if (!name || !url) {
+      window.location.reload();
     }
   }, [display]);
 
@@ -44,19 +51,28 @@ const ModalEdit = (props) => {
   };
   useEffect;
 
-  const handleSubmit = () => {
-    axios
-      .put(`http://localhost:3001/credentials/${userId}/${credId}`, credential)
-      .then((res) => {
-        if (res.data.success === true) {
-          console.log("Credentials updated");
-          setDisplay(false);
-          window.location.reload();
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    var payload = validateCredentials(credential);
+    if (payload.success) {
+      axios
+        .put(
+          `http://localhost:3001/credentials/${userId}/${credId}`,
+          credential
+        )
+        .then((res) => {
+          if (res.data.success === true) {
+            setErrors({});
+            setDisplay(false);
+            window.location.reload();
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      setErrors(payload.errors);
+    }
   };
 
   if (display) {
@@ -80,6 +96,8 @@ const ModalEdit = (props) => {
               value={credential.name}
               onChange={handleChange}
               label="Change the name"
+              error={errors.name && true}
+              helperText={errors.name}
             />
             <TextField
               className="input"
@@ -87,6 +105,8 @@ const ModalEdit = (props) => {
               value={credential.url}
               onChange={handleChange}
               label="Change the url"
+              error={errors.url && true}
+              helperText={errors.url}
             />
             <TextField
               className="input"
@@ -94,6 +114,8 @@ const ModalEdit = (props) => {
               value={credential.username}
               onChange={handleChange}
               label="Change the username"
+              error={errors.username && true}
+              helperText={errors.username}
             />
             <TextField
               className="input"
@@ -101,6 +123,8 @@ const ModalEdit = (props) => {
               value={credential.password}
               onChange={handleChange}
               label="Change the password"
+              error={errors.password && true}
+              helperText={errors.password}
             />
             <Button
               className="submit"
