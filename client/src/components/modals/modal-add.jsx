@@ -3,9 +3,11 @@ import "../../styles/modal-add.css";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/AddOutlined";
 import { Button, TextField, IconButton } from "@mui/material/";
+import { validateCredentials } from "../../utils/validators";
 
 const ModalAdd = ({ userId, addNewCredentials }) => {
   const [display, setDisplay] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const [newCredentials, setNewCredentials] = useState({
     name: "",
@@ -22,16 +24,22 @@ const ModalAdd = ({ userId, addNewCredentials }) => {
     });
   };
 
-  const handleSubmit = () => {
-    addNewCredentials(newCredentials, userId);
-
-    setDisplay(false);
-    setNewCredentials({
-      name: "",
-      url: "",
-      username: "",
-      password: "",
-    });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    var payload = validateCredentials(newCredentials);
+    if (payload.success) {
+      setErrors({});
+      addNewCredentials(newCredentials, userId);
+      setDisplay(false);
+      setNewCredentials({
+        name: "",
+        url: "",
+        username: "",
+        password: "",
+      });
+    } else {
+      setErrors(payload.errors);
+    }
   };
 
   if (display) {
@@ -48,43 +56,43 @@ const ModalAdd = ({ userId, addNewCredentials }) => {
         <h2>Add your new credentials: </h2>
         <form onSubmit={handleSubmit}>
           <TextField
-            // error={errors.username && true}
+            error={errors.name && true}
+            helperText={errors.name}
             className="input"
             name="name"
             label="Name your new credentials"
             value={newCredentials.name}
             onChange={handleChange}
-            // helperText={errors.username}
           />
 
           <TextField
-            // error={errors.username && true}
+            error={errors.url && true}
             className="input"
             name="url"
             label="The website URL"
             value={newCredentials.url}
             onChange={handleChange}
-            // helperText={errors.username}
+            helperText={errors.url}
           />
 
           <TextField
-            // error={errors.username && true}
+            error={errors.username && true}
             className="input"
             name="username"
             label="Your username"
             value={newCredentials.username}
             onChange={handleChange}
-            // helperText={errors.username}
+            helperText={errors.username}
           />
 
           <TextField
-            // error={errors.username && true}
+            error={errors.password && true}
             className="input"
             name="password"
             label="Your password"
             value={newCredentials.password}
             onChange={handleChange}
-            // helperText={errors.username}
+            helperText={errors.password}
           />
 
           <Button

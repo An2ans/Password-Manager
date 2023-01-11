@@ -14,7 +14,7 @@ const encrypt = (password) => {
   ]);
   //return both encryptation and iv
   return {
-    password: encryptedPassword.toString("hex"),
+    hash: encryptedPassword.toString("hex"),
     iv: iv.toString("hex"),
   };
 };
@@ -29,7 +29,7 @@ const decrypt = (encryption) => {
   );
 
   const decryptedPassword = Buffer.concat([
-    decipher.update(Buffer.from(encryption.password, "hex")),
+    decipher.update(Buffer.from(encryption.hash, "hex")),
     decipher.final(),
   ]);
 

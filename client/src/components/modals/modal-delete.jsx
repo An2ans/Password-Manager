@@ -13,24 +13,15 @@ import {
 } from "@mui/material";
 
 const ModalDelete = (props) => {
-  const { userId, credId, name, url } = props;
+  const { userId, credId, name, url, deleteCredentials } = props;
 
   // States
   const [display, setDisplay] = useState(false);
 
   const handleDelete = () => {
-    axios
-      .delete(`http://localhost:3001/credentials/${userId}/${credId}`)
-      .then((res) => {
-        if (res.data.success === true) {
-          console.log("Credentials deleted");
-          setDisplay(false);
-          window.location.reload();
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    deleteCredentials(userId, credId);
+    setDisplay(false);
+    window.location.reload();
   };
 
   const handleClose = (e) => {
