@@ -21,7 +21,6 @@ const ModalDelete = (props) => {
   const handleDelete = () => {
     deleteCredentials(userId, credId);
     setDisplay(false);
-    window.location.reload();
   };
 
   const handleClose = (e) => {

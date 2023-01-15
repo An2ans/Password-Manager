@@ -1,4 +1,3 @@
-import { Alert } from "@mui/material";
 import React, { Component } from "react";
 import { redirect } from "react-router-dom";
 import axios from "axios";
@@ -16,7 +15,7 @@ class Manager extends Component {
     super(props);
 
     this.state = {
-      info: null,
+      info: {},
       session: null,
       credentials: [],
       search: [],
@@ -63,7 +62,7 @@ class Manager extends Component {
     axios
       .post(`http://localhost:3001/credentials/${userId}`, newCredentials)
       .then((res) => {
-        if (res.data.success === true) {
+        if (res.data.success) {
           // window.location.reload();
 
           this.setState({
@@ -78,7 +77,7 @@ class Manager extends Component {
           this.setState({
             info: {
               message: res.data.message,
-              severity: "error",
+              category: "error",
             },
           });
         }
@@ -92,11 +91,16 @@ class Manager extends Component {
     axios
       .delete(`http://localhost:3001/credentials/${userId}/${credId}`)
       .then((res) => {
-        if (res.data.success === true) {
+        if (res.data.success) {
+          console.log(res.data.message);
           this.setState({
-            info: { category: "success", message: res.data.message },
+            info: {
+              message: res.data.message,
+              category: "success",
+            },
           });
-          window.location.reload();
+
+          this.getCredentials(userId);
         } else {
           this.setState({
             info: { category: "error", message: res.data.message },
@@ -147,12 +151,13 @@ class Manager extends Component {
     if (session) {
       return (
         <div className="manager-page">
-          {/* info to be replaced by modalinfo */}
-          {info && <ModalAdd category={info.category} message={info.message} />}
+          {info && (
+            <ModalAlert category={info.category} message={info.message} />
+          )}
 
           <div className="top">
             <ModalAdd
-              userId={this.state.session.userId}
+              userId={session.userId}
               addNewCredentials={this.addNewCredentials}
             />
             {/* Search bar to filter credentials */}
