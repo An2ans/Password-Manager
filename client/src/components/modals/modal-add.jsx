@@ -2,20 +2,40 @@ import React, { useState } from "react";
 import "../../styles/modal-add.css";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/AddOutlined";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import { Button, TextField, IconButton } from "@mui/material/";
 import { validateCredentials } from "../../utils/validators";
 import PassGenerator from "../other/PassGenerator";
+import PasswordStr from "../other/PasswordStr";
+
+const zxcvbn = require("zxcvbn");
 
 const ModalAdd = ({ userId, addNewCredentials }) => {
   const [display, setDisplay] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const [newCredentials, setNewCredentials] = useState({
+  const defaultState = {
     name: "",
-    url: "",
+    url: "www.",
     username: "",
     password: "",
-  });
+  };
+
+  const [newCredentials, setNewCredentials] = useState(defaultState);
+
+  const [btnTxt, setBtnTxt] = useState("show");
+
+  const [score, setScore] = useState(0);
+
+  const pwMask = (e) => {
+    e.preventDefault();
+    if (btnTxt === "show") {
+      setBtnTxt("hide");
+    } else {
+      setBtnTxt("show");
+    }
+  };
 
   const handleChange = (e) => {
     let name = e.target.name;
@@ -23,6 +43,12 @@ const ModalAdd = ({ userId, addNewCredentials }) => {
     setNewCredentials((others) => {
       return { ...others, [name]: value };
     });
+
+    if (name === "password" && value != "") {
+      var pw = zxcvbn(value);
+
+      setScore(pw.score + 1);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -32,12 +58,8 @@ const ModalAdd = ({ userId, addNewCredentials }) => {
       setErrors({});
       addNewCredentials(newCredentials, userId);
       setDisplay(false);
-      setNewCredentials({
-        name: "",
-        url: "",
-        username: "",
-        password: "",
-      });
+      setNewCredentials(defaultState);
+      setScore(0);
     } else {
       setErrors(payload.errors);
     }
@@ -64,6 +86,10 @@ const ModalAdd = ({ userId, addNewCredentials }) => {
     setNewCredentials((others) => {
       return { ...others, password: password };
     });
+
+    var pw = zxcvbn(password);
+
+    setScore(pw.score + 1);
   };
 
   if (display) {
@@ -113,14 +139,36 @@ const ModalAdd = ({ userId, addNewCredentials }) => {
             error={errors.password && true}
             className="input"
             name="password"
-            id="password"
+            type={btnTxt === "show" ? "password" : "text"}
             label="Your password"
             value={newCredentials.password}
             onChange={handleChange}
             helperText={errors.password}
           />
 
-          <PassGenerator createPassword={createPassword} />
+          <Button
+            className="btn-showPass "
+            variant="text"
+            onClick={pwMask}
+            endIcon={
+              btnTxt === "show" ? (
+                <VisibilityOutlinedIcon />
+              ) : (
+                <VisibilityOffOutlinedIcon />
+              )
+            }
+            sx={{ position: "absolute", right: "12%", top: "47%" }}
+          >
+            {btnTxt}
+          </Button>
+
+          <div className="bottom">
+            <div className="pwStrRow">
+              {score >= 1 && <PasswordStr score={score} />}
+            </div>
+
+            <PassGenerator createPassword={createPassword} />
+          </div>
 
           <Button
             className="submit input"

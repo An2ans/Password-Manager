@@ -34,6 +34,14 @@ h2 {
   cursor: pointer;
   float: right;
 }
+.bottom {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+  justify-items: center;
+}
 
 @media only screen and (min-width: 768px) {
   .input {

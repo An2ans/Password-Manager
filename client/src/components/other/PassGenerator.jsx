@@ -12,7 +12,12 @@ const PassGenerator = ({ createPassword }) => {
 
   return (
     <div className="generator-container">
-      <Button variant="outlined" color="secondary" onClick={handleClick}>
+      <Button
+        variant="outlined"
+        color="secondary"
+        onClick={handleClick}
+        sx={{ marginTop: "2rem " }}
+      >
         Generate Password
       </Button>
     </div>
