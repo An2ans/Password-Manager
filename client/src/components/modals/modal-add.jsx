@@ -4,6 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/AddOutlined";
 import { Button, TextField, IconButton } from "@mui/material/";
 import { validateCredentials } from "../../utils/validators";
+import PassGenerator from "../other/PassGenerator";
 
 const ModalAdd = ({ userId, addNewCredentials }) => {
   const [display, setDisplay] = useState(false);
@@ -40,6 +41,29 @@ const ModalAdd = ({ userId, addNewCredentials }) => {
     } else {
       setErrors(payload.errors);
     }
+  };
+
+  const createPassword = (n, s) => {
+    let chars =
+      "ABCDEFGHIJKLMNÑOPQRSTUVWXYZabcdefghijklmnñopqrstuvwxyz0123456789";
+    if (s) chars += "!#$%&()*+,-./:;<=>?@[]^_`{|}~";
+
+    let password = "";
+    for (let i = 0; i < n; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    //Checking the password contains at least a capital letter and a number
+    if (!/[A-Z]/.test(password)) {
+      password = password.slice(0, n - 2) + "A" + password.slice(n - 2);
+    }
+    if (!/\d/.test(password)) {
+      password = password.slice(0, n - 1) + "1";
+    }
+
+    setNewCredentials((others) => {
+      return { ...others, password: password };
+    });
   };
 
   if (display) {
@@ -89,11 +113,14 @@ const ModalAdd = ({ userId, addNewCredentials }) => {
             error={errors.password && true}
             className="input"
             name="password"
+            id="password"
             label="Your password"
             value={newCredentials.password}
             onChange={handleChange}
             helperText={errors.password}
           />
+
+          <PassGenerator createPassword={createPassword} />
 
           <Button
             className="submit input"
