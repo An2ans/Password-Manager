@@ -5,27 +5,37 @@ import IconButton from "@mui/material/IconButton";
 import Collapse from "@mui/material/Collapse";
 import CloseIcon from "@mui/icons-material/Close";
 
-const ModalAlert = ({ category, message }) => {
-  const [open, setOpen] = React.useState(true);
+const ModalAlert = (props) => {
+  const [open, setOpen] = React.useState(false);
 
-  const timer = 30000;
+  const { category, message } = props;
+
+  const [info, setInfo] = React.useState({ category, message });
+
+  const timer = 3000;
 
   React.useEffect(() => {
-    if (!category) {
-      category = "info";
+    if (!props.category) {
+      info.category = "info";
     }
-    if (open) {
+    if (info.message) {
+      setOpen(true);
       setTimeout(() => {
         setOpen(false);
       }, timer);
     }
-  }, [category, open]);
+
+    if (props.message != info.message) {
+      setInfo({ category: props.category, message: props.message });
+      console.log("Message changed");
+    }
+  }, [props, info, open]);
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Collapse in={open}>
+      <Collapse in={open} timeout={500}>
         <Alert
-          severity={category}
+          severity={info.category}
           action={
             <IconButton
               aria-label="close"
@@ -40,7 +50,7 @@ const ModalAlert = ({ category, message }) => {
           }
           sx={{ mb: 2 }}
         >
-          {message}
+          {info.message}
         </Alert>
       </Collapse>
     </Box>

@@ -46,7 +46,7 @@ exports.updateCredentials = async (req, res, next) => {
 
   try {
     await repository.updateCredentials(userId, credId, updatedCredentials);
-    res.send({ success: true, message: `Credentials updated ` });
+    res.send({ success: true, message: `Credentials updated successfully ` });
   } catch (err) {
     res.json({
       success: false,
@@ -71,7 +71,7 @@ exports.deleteCredentials = async (req, res, next) => {
 
   try {
     await repository.deleteCredentials(userId, credId);
-    res.send({ success: true, message: "Credentials deleted" });
+    res.send({ success: true, message: "Credentials successfully deleted" });
   } catch (err) {
     res.send({ success: false, message: err.message });
   }

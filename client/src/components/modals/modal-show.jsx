@@ -29,7 +29,7 @@ const ModalShow = (props) => {
       .get(`http://localhost:3001/credentials/${userId}/${credId}`)
       .then((res) => {
         if (res.data.success === true) {
-          setCredentials(res.data.results[0]);
+          setCredentials(res.data.results);
         }
       })
       .catch((error) => {
