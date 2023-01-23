@@ -52,7 +52,7 @@ exports.createTables = async () => {
     "username VARCHAR(250) NOT NULL",
     "password VARCHAR(250) NOT NULL",
     "iv VARCHAR(250) NOT NULL",
-    "created datetime default current_timestamp",
+    "created DATETIME DEFAULT current_timestamp",
     "user_id INT NOT NULL",
     "PRIMARY KEY (credentials_id)",
     "FOREIGN KEY (user_id) REFERENCES users(user_id));",

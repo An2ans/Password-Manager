@@ -1,4 +1,4 @@
-#Password Manager#
+#Password Manager
 
 - index
 - Descripcion
@@ -24,20 +24,20 @@
 
 The server-side of the project is built using Express as a RESTful API. It includes the database service code, the main server code to run express and other libraries, the routes, controllers and repositories, as well as the encryption code. The layout of files is:
 
-server.js - main server code
-dbService.js - database related code
-encryption.js - code to encrypt and decrypt the passwords
-routes
-      user - all the routes related to the user
-      credentials
-controllers
-      user
-      credentials
-repositories
-      user
-      credentials
+- server.js - main server code
+- dbService.js - database related code
+- encryption.js - code to encrypt and decrypt the passwords
+- routes
+        user - all the routes related to the user
+        credentials
+- controllers
+        user
+        credentials
+- repositories
+        user
+        credentials
 
-##DATABASE##
+##DATABASE
 
 The database uses SQL to store the data in a database file named passwordManager.db . If this file does not exist, when the user log-in or sign-up, the route /setup will ensure the file exists and it includes the correct tables. There are only 2 tables (at this moment) users and credentials, with the following layout:
 

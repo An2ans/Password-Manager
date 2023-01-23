@@ -1,6 +1,7 @@
 import React, { Component, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { Navigate } from "react-router-dom";
+import Markdown from "markdown-to-jsx";
 
 import "./index.css";
 import {
@@ -24,6 +25,7 @@ class App extends Component {
       errors: {},
       session: null,
       isLoggedIn: false,
+      readme: "",
     };
     this.getSession = this.getSession.bind(this);
     this.logOut = this.logOut.bind(this);
@@ -47,6 +49,13 @@ class App extends Component {
 
   componentDidMount() {
     this.getSession();
+    fetch(`${process.env.PUBLIC_URL}/README.md`)
+      .then((response) => response.text())
+      .then((text) => this.setState({ readme: text }))
+      .catch((err) => {
+        console.log(err);
+        this.setState({ readme: "UNABLE TO FETCH THE README.md FILE" });
+      });
   }
 
   render() {
@@ -85,6 +94,12 @@ class App extends Component {
             exact
             path="/admin"
             element={this.state.isLoggedIn ? <AdminTable /> : <LogIn />}
+          ></Route>
+
+          <Route
+            exact
+            path="/readme"
+            element={<Markdown children={this.state.readme} />}
           ></Route>
         </Routes>
       </Router>
