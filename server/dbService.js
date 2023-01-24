@@ -30,6 +30,8 @@ exports.createDB = async () => {
 
   const dbResults = await db.execute("SHOW DATABASES LIKE 'passwordManager';");
 
+  console.log(dbResults[0]);
+
   if (dbResults[0].length < 1) {
     await db.query("CREATE DATABASE IF NOT EXISTS passwordManager");
     await this.createTables();
@@ -88,10 +90,6 @@ exports.createTables = async () => {
   await db.query(
     "INSERT INTO credentials (credentials_id, name, url, username, password, iv, user_id) VALUES (1, 'test', 'www.google.com', 'username',  'password', 'iv', 1);"
   );
-
-  // db.end((err) => {
-  //   if (err) throw err;
-  // });
 };
 
 // Drop the tables and create them again
@@ -114,6 +112,7 @@ exports.checkTables = async () => {
 
   if (tables[0].length < 2) {
     success = false;
+    return success;
   }
   await tables[0].map((table) => {
     if (

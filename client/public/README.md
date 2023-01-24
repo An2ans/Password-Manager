@@ -39,7 +39,7 @@ The server-side of the project is built using Express as a RESTful API. It inclu
 
 ##DATABASE
 
-The database uses SQL to store the data in a database file named passwordManager.db . If this file does not exist, when the user log-in or sign-up, the route /setup will ensure the file exists and it includes the correct tables. There are only 2 tables (at this moment) users and credentials, with the following layout:
+The database uses SQL to store the data in a database file named passwordManager.db . If this file does not exist, when the user log-in or sign-up, the route will call the setup method from dbService.js, this will ensure the file exists and it includes the correct tables. There are only 2 tables (at this moment) users and credentials, with the following layout:
 
 - users
 

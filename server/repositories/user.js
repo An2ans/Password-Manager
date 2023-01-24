@@ -3,6 +3,8 @@ const db = require("../dbService");
 const { encrypt, decrypt } = require("../encryption");
 
 exports.createUser = async (username, email, password) => {
+  await db.setup();
+
   const con = await db.connect();
 
   const { hash, iv } = encrypt(password);
