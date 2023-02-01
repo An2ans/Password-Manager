@@ -76,10 +76,9 @@ class SignUp extends Component {
       .post("http://localhost:3001/user", params)
       .then((res) => {
         if (res.data.success === true) {
-          let newUser = res.data.user;
-          axios.post("http://localhost:3001/auth", newUser).then((res) => {
+          let login = { username: user.username, password: user.password };
+          axios.post("http://localhost:3001/auth", login).then((res) => {
             if (res.data.success === true) {
-              console.log("SEGUNDO SUCCESS");
               let session = JSON.stringify(res.data.session);
               localStorage.setItem("session", session);
               window.location.reload();
