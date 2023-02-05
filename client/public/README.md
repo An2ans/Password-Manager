@@ -59,12 +59,30 @@ The database uses SQL to store the data in a database file named passwordManager
   - created DATETIME DEFAULT current_timestamp
   - user_id INT NOT NULL FOREIGN KEY REFERENCES users(user_id)
 
-The users table store all the information about the different users (username, email, password), so different users can use the app in the same device and keep their credentials safe. Since we are using the username to log in, this is set as unique (at this moment) to avoid issues. Once an user sign-up, an new user is created and inserted in users table with an unique id.
+The users table store all the information about the different users (username, email, password), so different users can use the app in the same device and keep their credentials safe. Since we are using the username to log in, this is set as unique to avoid issues. Once an user sign-up, an new user is created and inserted in users table with an unique id.
 
 All the credentials are saved in the same table, depending on the user who added the credentials, they will have an user id that we will use to fetch the right credentials only. Each credentials have a name to identify similar ones, an URL to quickly access the site, the username, password, iv number and the time stamp when it was created at.
 
-Both, users and credentials tables store the passwords as a hash, toguether with an iv number needed for the decryption.
+Both, users and credentials tables store the passwords as a hash, toguether with an iv number needed for the decryption. In encryption.js we can find 2 functions, encrypt and decrypt, both use the package [Crypto](https://www.npmjs.com/package/crypto-js). Encrypt takes a password (string) and return a hash and a iv number. Decrypt takes a hash and a iv number and returns the original password.
 
-All the code related to the database service is included in the file dbService.js. This uses the promise form of [MySQL2 library](https://www.npmjs.com/package/mysql2)
+All the code related to the database service is included in the file dbService.js. This uses the promise form of [MySQL2 library](https://www.npmjs.com/package/mysql2) to start the connection.
+
+##API
+
+I have divided all the code regarding the API calls in 3 folders: routes, controllers and repositories. The routes are created according to the RESTfull principles.
+
+- POST /user - create user
+- GET /user - list all users
+- GET /user/:id - find user by id
+- PUT /user/:id - edit user
+- DELETE /user/:id - delete user
+- POST /auth - login user
+
+- GET /credentials - list all credentials
+- GET /credentiald/:userId - get all the user credentials
+- POST /credentials/:userId - create new credentials
+- GET /credentials/:userId/:credId - show selected credentials (username & password inc)
+- PUT /credentials/:userId/:credId - update the credential details
+- DELETE /credentials/:userId/:credId - delete the credentials
 
 ---
