@@ -1,14 +1,12 @@
 #Password Manager
 
-- index
-- Descripcion
-
+- Index
+- Description
 - Server
-  The server-side of the project is built in
 
   1. Arquitecture
   2. DB
-  3. Routes
+  3. API
 
 - Client
 
@@ -22,18 +20,20 @@
 
 - Updates
 
+##Server
+
 The server-side of the project is built using Express as a RESTful API. It includes the database service code, the main server code to run express and other libraries, the routes, controllers and repositories, as well as the encryption code. The layout of files is:
 
 - server.js - main server code
 - dbService.js - database related code
 - encryption.js - code to encrypt and decrypt the passwords
-- routes
+- routes - All the routes related to the user and credentials
   - user
   - credentials
-- controllers
+- controllers -The controllers that deal with the requests / responses
   - user
   - credentials
-- repositories
+- repositories - All the code related to the DB and logic
   - user
   - credentials
 
@@ -81,8 +81,14 @@ I have divided all the code regarding the API calls in 3 folders: routes, contro
 - GET /credentials - list all credentials
 - GET /credentiald/:userId - get all the user credentials
 - POST /credentials/:userId - create new credentials
-- GET /credentials/:userId/:credId - show selected credentials (username & password inc)
+- GET /credentials/:userId/:credId - show selected credentials (username & password)
 - PUT /credentials/:userId/:credId - update the credential details
 - DELETE /credentials/:userId/:credId - delete the credentials
 
----
+The controllers deal with the requests / responses, they take the parameters from req.body and store it in a variable, they call the specific function from the repositories, and they ensure the response has the same structure, with a boolean named "success". This is used in the client side to show the results (if any) or to advise on an error.
+
+The repositories, as mentioned above, is where the db code & logic is. Here I use throw to raise an error if the results are not the expected ones. For example, to create a new user we first search in the db for the same username, to avoid an error while addidng the new user since username is unique. If there is an user with the same username already, the createUser function will throw an error with the message "This username already exists". Since the controller code is inside a try / catch statement, the response will be success: false , message: "This username already exists"; this will be used in the client side to advise the user to try a different username.
+
+## CLIENT
+
+The client-side of this project is built in React using [create-react-app](https://www.npmjs.com/package/create-react-app).
