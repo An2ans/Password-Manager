@@ -21,37 +21,18 @@
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-/* Modal Header */
-.modal-header {
-  padding: 2px 16px;
-  background-color: #1081dd;
-  color: white;
-}
-
-/* Modal Content */
 .modal-content {
-  min-height: 4rem;
-  background-color: #fefefe;
-  overflow: auto;
-
-  margin: auto;
-  padding: 0 1rem 4rem 1rem;
-  border: 1px solid #888;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-
-.modal-content span {
-  font-size: 1.5rem;
-  text-align: center;
-}
-
-.pass-container,
-.user-container {
   display: flex;
   flex-direction: column;
-
-  padding: 0 1rem 0 1rem;
   justify-content: space-between;
+}
+
+.credentials {
+  align-self: center;
+  justify-self: center;
+  line-height: 1.4;
+  font-size: 1.5rem;
+  cursor: copy;
 }
 
 @media only screen and (min-width: 768px) {

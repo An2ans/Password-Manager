@@ -20,7 +20,7 @@
 
 - Updates
 
-##Server
+## Server
 
 The server-side of the project is built using Express as a RESTful API. It includes the database service code, the main server code to run express and other libraries, the routes, controllers and repositories, as well as the encryption code. The layout of files is:
 
@@ -37,7 +37,7 @@ The server-side of the project is built using Express as a RESTful API. It inclu
   - user
   - credentials
 
-##DATABASE
+## DATABASE
 
 The database uses SQL to store the data in a database file named passwordManager.db . If this file does not exist, when the user log-in or sign-up, the route will call the setup method from dbService.js, this will ensure the file exists and it includes the correct tables. There are only 2 tables (at this moment) users and credentials, with the following layout:
 
@@ -67,7 +67,7 @@ Both, users and credentials tables store the passwords as a hash, toguether with
 
 All the code related to the database service is included in the file dbService.js. This uses the promise form of [MySQL2 library](https://www.npmjs.com/package/mysql2) to start the connection.
 
-##API
+## API
 
 I have divided all the code regarding the API calls in 3 folders: routes, controllers and repositories. The routes are created according to the RESTfull principles.
 
@@ -92,3 +92,17 @@ The repositories, as mentioned above, is where the db code & logic is. Here I us
 ## CLIENT
 
 The client-side of this project is built in React using [create-react-app](https://www.npmjs.com/package/create-react-app).
+
+Inside the public folder you can find a copy of this readme file, the favicon examples, and the index.html file with the root where we will render the app.
+
+Inside the src folder you can find the global styles named as index.css, the index.js file where the app component is, and 3 folders containing the components, the specific styles for each component, and a folder named utils with the form validators.
+
+In index.js, we can render the right components depending on the route and state. Example: if the user is not logged in they cannot access the manager page at the root route "/" they will see the welcome page instead. Once the user is logged, the same route will show the manager page. This is also used to restrict the access to log-in / sign-up page is the user is already logged in.
+
+The user journey will be as follows:
+
+First, the user will sign up at /sign-up, the user credentials will be sent to the db, the app will log-in the new user automatically and re-direct them to the manager page. Here, the user can see all the credentials already in the account (empty due new user) and can create new credentials.
+
+To do so, they must click on the modal add. On click, the modal will change the display state and show a form to create new credentials. There is a password generator that will return a randon 12 characters (alfanumeric and special) password, also a password strength indicator if you wish to create your own password. You can hide / show the password using the icon next to it field. For last, the form has all sort of validators to ensure the fields have a min character number, password is min 8 character, the url is correct, etc.
+
+Once the credentials are created, it will be shown on the password manager. It can get quite messy with more and more credentials, so I added a search bar to sort them fo their name. To hide the username and password from other eyes, the user must click on the show modal, it will display the credentials for a limited time (10s). You can click on the password and it will be copied to your clipboard.

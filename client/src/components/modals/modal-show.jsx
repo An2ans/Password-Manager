@@ -68,16 +68,29 @@ const ModalShow = (props) => {
               <CloseIcon />
             </IconButton>
           </CardActions>
-          <CardContent>
-            <h2>{name}</h2>
+          <CardContent className="modal-content">
+            <h2 className="name">{name}</h2>
 
             <a href={`https://${url}`} target="_blank">
               <h3>{url}</h3>
             </a>
 
-            <br />
-            <h3>Username: {username} </h3>
-            <h3>Password: {password}</h3>
+            <div
+              className="credentials"
+              onClick={() => {
+                navigator.clipboard.writeText(username);
+              }}
+            >
+              {username}
+            </div>
+            <div
+              className="credentials"
+              onClick={() => {
+                navigator.clipboard.writeText(password);
+              }}
+            >
+              {password}
+            </div>
           </CardContent>
         </Card>
       </div>

@@ -31,6 +31,7 @@ class App extends Component {
     this.logOut = this.logOut.bind(this);
   }
 
+  // Get the session item from local storage and save it in state
   getSession() {
     const session = JSON.parse(localStorage.getItem("session"));
     if (session) {
@@ -40,6 +41,7 @@ class App extends Component {
     }
   }
 
+  // clear local storage and state
   logOut() {
     localStorage.clear();
     this.setState({ session: null, isLoggedIn: false });
@@ -47,6 +49,7 @@ class App extends Component {
     window.location.reload();
   }
 
+  // When component mount the app try to get the session from local storage and fetch the readme
   componentDidMount() {
     this.getSession();
     fetch(`${process.env.PUBLIC_URL}/README.md`)
