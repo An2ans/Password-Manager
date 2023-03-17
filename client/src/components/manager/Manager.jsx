@@ -25,6 +25,7 @@ class Manager extends Component {
     this.handleSearch = this.handleSearch.bind(this);
     this.listCredentials = this.listCredentials.bind(this);
     this.deleteCredentials = this.deleteCredentials.bind(this);
+    this.handleCopy = this.handleCopy.bind(this);
   }
 
   componentDidMount() {
@@ -63,8 +64,6 @@ class Manager extends Component {
       .post(`http://localhost:3001/credentials/${userId}`, newCredentials)
       .then((res) => {
         if (res.data.success) {
-          // window.location.reload();
-
           this.setState({
             info: {
               message: res.data.message,
@@ -87,6 +86,7 @@ class Manager extends Component {
       });
   };
 
+  // To delete the credentials. It is passed to the delete modal
   deleteCredentials = (userId, credId) => {
     axios
       .delete(`http://localhost:3001/credentials/${userId}/${credId}`)
@@ -112,6 +112,19 @@ class Manager extends Component {
       });
   };
 
+  //To handle the copy funtionallity on modal show, it just copy the content into the clipboard and shows an info alert
+
+  handleCopy = (text) => {
+    navigator.clipboard.writeText(text);
+    this.setState({
+      info: {
+        category: "info",
+        message: "Credentials copied into the clipboard",
+      },
+    });
+  };
+
+  // To filter the credential I use an empty array to store the results
   handleSearch = (search) => {
     if (!search) {
       this.setState({ search: [] });
@@ -124,6 +137,7 @@ class Manager extends Component {
     }
   };
 
+  // This is to switch from the full list to the search results list
   listCredentials = (list) => {
     if (list.length > 0) {
       return list.map((cred) => {
@@ -137,6 +151,7 @@ class Manager extends Component {
             name={name}
             url={url}
             deleteCredentials={this.deleteCredentials}
+            handleCopy={this.handleCopy}
           />
         );
       });
@@ -160,7 +175,6 @@ class Manager extends Component {
               userId={session.userId}
               addNewCredentials={this.addNewCredentials}
             />
-            {/* Search bar to filter credentials */}
             <SearchBar handleSearch={this.handleSearch} />
           </div>
 

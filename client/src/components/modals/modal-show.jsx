@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 
 const ModalShow = (props) => {
-  const { userId, credId, name, url } = props;
+  const { userId, credId, name, url, handleCopy } = props;
 
   // States
   const [display, setDisplay] = useState(false);
@@ -40,7 +40,7 @@ const ModalShow = (props) => {
   const handleShow = (e) => {
     showCredentials(userId, credId);
     setDisplay(true);
-    setTimeout(() => {
+    let t = setTimeout(() => {
       setCredentials({ username: null, password: null });
       setDisplay(false);
     }, timer);
@@ -51,6 +51,7 @@ const ModalShow = (props) => {
       e.target.classList.contains("close-btn") ||
       e.target.classList.contains("modal-wrapper")
     ) {
+      clearTimeout(t);
       setDisplay(false);
     }
   };
@@ -78,7 +79,7 @@ const ModalShow = (props) => {
             <div
               className="credentials"
               onClick={() => {
-                navigator.clipboard.writeText(username);
+                handleCopy(username);
               }}
             >
               {username}
@@ -86,7 +87,7 @@ const ModalShow = (props) => {
             <div
               className="credentials"
               onClick={() => {
-                navigator.clipboard.writeText(password);
+                handleCopy(password);
               }}
             >
               {password}

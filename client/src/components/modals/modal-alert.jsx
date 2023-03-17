@@ -32,7 +32,7 @@ const ModalAlert = (props) => {
   }, [props, info, open]);
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%", zIndex: "10" }}>
       <Collapse in={open} timeout={500}>
         <Alert
           severity={info.category}
@@ -48,7 +48,7 @@ const ModalAlert = (props) => {
               <CloseIcon fontSize="inherit" />
             </IconButton>
           }
-          sx={{ mb: 2 }}
+          sx={{ mb: 2, zIndex: "10" }}
         >
           {info.message}
         </Alert>
